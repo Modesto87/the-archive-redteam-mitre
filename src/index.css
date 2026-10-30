@@ -1,0 +1,122 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --arch-paper: #ece6da;
+    --arch-paper-light: #f4efe6;
+    --arch-paper-dark: #dfd8c8;
+    --arch-ink: #161514;
+    --arch-ink-muted: #4a4742;
+    --arch-red: #b81d18;
+    --arch-red-dark: #8f1410;
+    --arch-border: #262421;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: var(--arch-paper);
+    color: var(--arch-ink);
+  }
+
+  code, pre, .font-mono {
+    font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+
+  .font-archive-serif {
+    font-family: 'Playfair Display', Georgia, Cambria, serif;
+  }
+
+  .font-slab {
+    font-family: 'Alfa Slab One', 'Oswald', Impact, serif;
+    letter-spacing: 0.02em;
+  }
+
+  .font-condensed {
+    font-family: 'Oswald', 'Arial Narrow', sans-serif;
+  }
+}
+
+/* Textura de Papel Tático Envelhecido & Grelha Cartográfica ("THE ARCHIVE") */
+.archive-paper-bg {
+  background-color: #ece6da;
+  background-image:
+    radial-gradient(circle at 50% 35%, rgba(255, 252, 245, 0.5) 0%, rgba(212, 203, 186, 0.45) 100%),
+    linear-gradient(to right, rgba(22, 21, 20, 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(22, 21, 20, 0.045) 1px, transparent 1px);
+  background-size: 100% 100%, 40px 40px, 40px 40px;
+}
+
+/* Modo Noturno Opcional ("NIGHT OPS / BLACK DOSSIER") mantendo a mesma tipografia editorial */
+.archive-night-bg {
+  background-color: #121211;
+  color: #e8e2d5;
+  background-image:
+    radial-gradient(circle at 50% 35%, rgba(30, 29, 27, 0.6) 0%, rgba(12, 12, 11, 0.9) 100%),
+    linear-gradient(to right, rgba(232, 226, 213, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(232, 226, 213, 0.04) 1px, transparent 1px);
+  background-size: 100% 100%, 40px 40px, 40px 40px;
+}
+
+/* Textura subtil de grão de papel impresso */
+.paper-grain-overlay {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  opacity: 0.22;
+  background-image: radial-gradient(rgba(22, 21, 20, 0.18) 1px, transparent 0);
+  background-size: 3px 3px;
+}
+
+/* Lombada Vermelha Vertical Direita (Idêntica à capa do livro THE ARCHIVE) */
+.archive-red-spine {
+  background-color: #b81d18;
+  background-image:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.28) 0%, rgba(255, 255, 255, 0.08) 14%, rgba(0, 0, 0, 0.05) 85%, rgba(0, 0, 0, 0.25) 100%);
+  box-shadow: -3px 0 12px rgba(0, 0, 0, 0.22);
+}
+
+/* Riscas diagonais militares da lombada */
+.archive-hazard-stripes {
+  background: repeating-linear-gradient(
+    -45deg,
+    #161514,
+    #161514 4px,
+    transparent 4px,
+    transparent 8px
+  );
+}
+
+/* Texto vertical na lombada */
+.writing-vertical-rl {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
+
+/* Espaçamento tipográfico editorial das capas */
+.tracking-archive-wide {
+  letter-spacing: 0.22em;
+}
+
+.tracking-archive-ultra {
+  letter-spacing: 0.32em;
+}
+
+/* Scrollbars estilo Dossier Impresso */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: #dfd8c8;
+  border-left: 1px solid rgba(22, 21, 20, 0.15);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #161514;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #b81d18;
+}

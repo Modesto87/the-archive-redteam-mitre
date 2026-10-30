@@ -1,0 +1,95 @@
+# THE ARCHIVE // RED TEAM
+### MITRE ATT&CK® Tactical Field Manual & Evasion Engine (Offensive Security Field Notes)
+
+Plataforma tática interativa baseada na matriz global do **MITRE ATT&CK® Enterprise** (STIX 2.1), com design editorial inspirado em manuais de campo militares e relatórios de inteligência ofensiva (*The Archive // Red Team*).
+
+Criada especificamente como guia de referência rápida e motor de desbloqueio para operadores de Red Team e consultores de testes de intrusão (pentesters).
+
+---
+
+## ⚡ Principais Funcionalidades
+
+1. **Matriz Tática de 15 Fases (15 Volumes da Kill Chain)**:
+   - Navegação por todas as 15 táticas do MITRE ATT&CK: Reconhecimento, Acesso Inicial, Execução, Persistência, Escalada de Privilégios, Furtividade, Neutralização de Defesas, Acesso a Credenciais, Descoberta, Movimentação Lateral, Recolha, C2, Exfiltração e Impacto.
+   - Mais de **706 técnicas e sub-técnicas** catalogadas.
+   - Textos conceituais e mecânica técnica em **Português**, com preservação integral de toda a terminologia técnica internacional em **Inglês** (*Credential Dumping, Pass-the-Hash, AMSI Bypass, Token Impersonation, Living off the Land*, etc.).
+
+2. **Motor de Desbloqueio Tático ("ICE Breaker / Evasion Playbooks")**:
+   - **16 Playbooks de Desbloqueio** com vetores de contorno, comandos prontos e tradecraft testado para quando o pentester é bloqueado por:
+     - AMSI & Constrained Language Mode (CLM)
+     - LSASS RunAsPPL & Credential Guard
+     - EDR User-Mode Inline Hooking em `ntdll.dll`
+     - AppLocker & Windows Defender Application Control (WDAC)
+     - Restrições de Porta SMB 445 / WinRM 5985
+     - Grupo Protected Users & Desativação de NTLM
+     - Egress Filtering Restrito & Proxy Corporativo com TLS Inspection
+     - UAC Split Token & Privilege Escalation
+     - Linux Hardened (Capabilities, Namespaces, AppArmor/SELinux)
+     - Container Escape (Docker & Kubernetes Pods)
+     - AD CS (ESC1-ESC8) & Shadow Credentials
+     - WAF Bypass (Deep Packet Inspection & Encoding Smuggling)
+     - MFA & Entra ID Conditional Access
+     - Evasão de Sysmon & Detecções SIEM
+     - Persistência Furtiva a Autoruns
+     - Evasão de DLP em Exfiltração
+
+3. **Arsenal Living-off-the-Land (LOLBAS & GTFOBins)**:
+   - Mapeamento direto de binários nativos assinados (ex: `MSBuild.exe`, `InstallUtil.exe`, `rundll32 comsvcs`, `certutil`, `getcap`, `nsenter`) para contornar restrições de execução.
+
+4. **Matriz Anti-Mitigação (M1xxx)**:
+   - Mapeamento de cada mitigação oficial do MITRE para o respetivo procedimento ofensivo de contorno.
+
+5. **Modo Cockpit Split-View & Rastro de Navegação (Trace Path)**:
+   - Navegação contínua sem modais bloqueantes: a árvore tática permanece acessível à esquerda enquanto o dossier técnico atualiza instantaneamente à direita.
+   - Histórico de navegação fluida com navegação `ANTERIOR` e `SEGUINTE` entre técnicas, volumes e playbooks.
+
+6. **Personal Field Notes & Kill Chain Builder (100% Offline)**:
+   - Permite arquivar técnicas na Kill Chain do pentest, registar notas de campo por técnica e exportar relatórios completos em formato Markdown (`.md`).
+   - Dados armazenados localmente no browser (`localStorage`), garantindo sigilo e funcionamento mesmo em redes isoladas (air-gapped).
+
+---
+
+## 🛠️ Stack Tecnológica
+
+- **Framework**: React 19 + TypeScript + Vite
+- **Estilização**: Tailwind CSS v4 com paleta editorial *The Archive* (`#ece6da`, `#161514`, `#b81d18`)
+- **Ícones**: Lucide React
+- **Áudio Tático**: Web Audio API (sintetizador nativo para feedback operacional)
+- **Dados**: Ingestão oficial MITRE ATT&CK STIX 2.1 compilada para JSON estático local (`public/data/mitre-catalog.json`)
+
+---
+
+## 🚀 Como Executar
+
+### Pré-requisitos
+- Node.js 18+ (testado em Node.js v24)
+- npm
+
+### Instalação e Execução
+```bash
+# Instalar dependências
+npm install
+
+# Iniciar servidor de desenvolvimento
+npm run dev
+
+# Compilar para produção
+npm run build
+
+# Pré-visualizar build de produção
+npm run preview
+```
+
+### Recompilar Dados do MITRE (Opcional)
+Se desejar reprocessar o STIX canónico do MITRE:
+```bash
+npm run rebuild-catalog
+```
+
+---
+
+## 📜 Licença e Isenção de Responsabilidade
+
+Os dados de técnicas, táticas e mitigações são propriedade de **The MITRE Corporation** e regidos pelos termos do [MITRE ATT&CK®](https://attack.mitre.org/).
+
+Esta ferramenta foi desenvolvida para fins educacionais, de pesquisa acadêmica em segurança ofensiva e execução de testes de intrusão autorizados.
