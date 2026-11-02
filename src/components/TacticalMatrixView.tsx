@@ -246,7 +246,7 @@ export const TacticalMatrixView: React.FC<TacticalMatrixViewProps> = ({
           <div className="flex items-center gap-2">
             <span className="w-3 h-3 bg-[#b81d18] inline-block" />
             <span className="text-xs font-mono font-bold uppercase tracking-widest text-[#161514]">
-              ÍNDICE DE VOLUMES // 15 FASES TÁTICAS MITRE ATT&amp;CK:
+              ÍNDICE DE VOLUMES // 15 TÁTICAS MITRE ATT&amp;CK:
             </span>
           </div>
 
@@ -265,7 +265,7 @@ export const TacticalMatrixView: React.FC<TacticalMatrixViewProps> = ({
               }`}
             >
               <Columns className="w-3.5 h-3.5" />
-              MODO MANUAL ABERTO (SPLIT-VIEW)
+              MODO MANUAL ABERTO (VISTA DIVIDIDA)
             </button>
 
             <button
@@ -327,10 +327,10 @@ export const TacticalMatrixView: React.FC<TacticalMatrixViewProps> = ({
                   <span className="text-[10px] font-mono opacity-80">{count}T</span>
                 </div>
                 <span className="font-condensed font-bold text-sm uppercase truncate mt-0.5">
-                  {tac.nameEn}
+                  {tac.namePt}
                 </span>
                 <span className="text-[10px] font-mono truncate opacity-85">
-                  {tac.namePt}
+                  MITRE: {tac.nameEn}
                 </span>
               </button>
             );
@@ -368,7 +368,7 @@ export const TacticalMatrixView: React.FC<TacticalMatrixViewProps> = ({
               onClick={expandAll}
               className="px-2.5 py-1 bg-[#f4efe6] hover:bg-[#161514] text-[#161514] hover:text-[#f4efe6] border border-[#161514] text-[11px] font-mono font-bold flex items-center gap-1 cursor-pointer transition-colors"
             >
-              <Maximize2 className="w-3 h-3" /> EXPANDIR SUB-TÉCNICAS
+              <Maximize2 className="w-3 h-3" /> EXPANDIR SUBTÉCNICAS
             </button>
             <button
               type="button"
@@ -382,7 +382,7 @@ export const TacticalMatrixView: React.FC<TacticalMatrixViewProps> = ({
       </div>
 
       {/* =================================================================================
-          MODO 1: MANUAL DE CAMPO ABERTO (CAPA DO VOLUME + SPLIT-VIEW COCKPIT)
+          MODO 1: MANUAL DE CAMPO ABERTO (CAPA DO VOLUME + VISTA DIVIDIDA)
          ================================================================================= */}
       {layoutMode === 'cockpit' && (
         <div className="space-y-5">
@@ -394,7 +394,7 @@ export const TacticalMatrixView: React.FC<TacticalMatrixViewProps> = ({
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center relative z-10">
-              {/* Esquerda: VOL. XX + Título Slab + Barra OFFENSIVE SECURITY FIELD NOTES */}
+              {/* Esquerda: VOL. XX + Título Slab + Barra NOTAS DE CAMPO DE SEGURANÇA OFENSIVA */}
               <div className="lg:col-span-7 space-y-3">
                 {/* Linha VOL. 01 | Palavras-Chave Empilhadas */}
                 <div className="flex items-center gap-5">
@@ -420,15 +420,15 @@ export const TacticalMatrixView: React.FC<TacticalMatrixViewProps> = ({
                 <div>
                   <h2 className="text-3xl sm:text-4xl md:text-5xl font-slab uppercase text-[#161514] leading-[1.02] tracking-wide">
                     {effectiveCockpitTactic
-                      ? `${effectiveCockpitTactic.nameEn} // ${effectiveCockpitTactic.namePt}`
-                      : 'COMPLETE ADVERSARY ARCHIVE'}
+                      ? effectiveCockpitTactic.namePt
+                      : 'ARQUIVO COMPLETO DE TÉCNICAS ADVERSÁRIAS'}
                   </h2>
                 </div>
 
-                {/* Faixa Dupla: OFFENSIVE SECURITY FIELD NOTES */}
+                {/* Faixa Dupla: NOTAS DE CAMPO DE SEGURANÇA OFENSIVA */}
                 <div className="border-t-2 border-[#161514] border-b-2 border-b-[#b81d18] py-2 text-center sm:text-left">
                   <div className="font-condensed font-bold text-sm md:text-base tracking-[0.28em] uppercase text-[#161514]">
-                    OFFENSIVE SECURITY FIELD NOTES //{' '}
+                    NOTAS DE CAMPO DE SEGURANÇA OFENSIVA //{' '}
                     {effectiveCockpitTactic ? effectiveCockpitTactic.id : 'MITRE ATT&CK v18'}
                   </div>
                   <div className="font-mono font-bold text-[11px] tracking-[0.2em] uppercase text-[#b81d18] mt-0.5">
@@ -450,7 +450,7 @@ export const TacticalMatrixView: React.FC<TacticalMatrixViewProps> = ({
               <div className="lg:col-span-5 xl:pr-28 space-y-2">
                 <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-[#b81d18]">
                   <ArchiveDeltaSymbol className="w-4 h-4 text-[#161514]" />
-                  <span>KNOWLEDGE PRECEDES ACCESS // PLAYBOOKS DESTE VOLUME:</span>
+                  <span>O CONHECIMENTO PRECEDE O ACESSO // PROCEDIMENTOS DESTE VOLUME:</span>
                 </div>
 
                 <div className="space-y-1.5">
@@ -485,7 +485,7 @@ export const TacticalMatrixView: React.FC<TacticalMatrixViewProps> = ({
             </div>
           </div>
 
-          {/* SPLIT-VIEW DE CAMPO: ÍNDICE DE TÉCNICAS À ESQUERDA + PÁGINA DO DOSSIER À DIREITA */}
+          {/* VISTA DIVIDIDA DE CAMPO: ÍNDICE DE TÉCNICAS À ESQUERDA + PÁGINA DO DOSSIER À DIREITA */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
             {/* Coluna Esquerda: Índice de Técnicas e Sub-técnicas do Volume */}
             <div className="lg:col-span-5 xl:col-span-4 bg-[#f4efe6] border-2 border-[#161514] flex flex-col h-[78vh]">
@@ -584,10 +584,10 @@ export const TacticalMatrixView: React.FC<TacticalMatrixViewProps> = ({
                         </div>
 
                         <div className="font-condensed font-bold text-base uppercase text-[#161514] leading-snug">
-                          {tech.nameEn}
+                          {tech.namePt}
                         </div>
                         <div className="text-xs font-mono text-[#4a4742] leading-tight mt-0.5">
-                          {tech.namePt}
+                          MITRE: {tech.nameEn}
                         </div>
                       </div>
 
@@ -613,7 +613,7 @@ export const TacticalMatrixView: React.FC<TacticalMatrixViewProps> = ({
                                 <span className="text-[10px] font-bold">
                                   .{sub.id.split('.')[1]}
                                 </span>
-                                <span className="truncate max-w-[170px]">{sub.nameEn}</span>
+                                <span className="truncate max-w-[170px]">{sub.namePt}</span>
                               </button>
                             );
                           })}
@@ -735,9 +735,9 @@ export const TacticalMatrixView: React.FC<TacticalMatrixViewProps> = ({
                       </div>
 
                       <h3 className="font-condensed font-bold text-base text-[#f4efe6] uppercase tracking-wider truncate">
-                        {tac.nameEn}
+                        {tac.namePt}
                       </h3>
-                      <p className="text-xs font-mono text-[#d8d0c0] truncate">{tac.namePt}</p>
+                      <p className="text-xs font-mono text-[#d8d0c0] truncate">MITRE: {tac.nameEn}</p>
                     </div>
 
                     {/* Lista de Técnicas da Coluna */}
@@ -791,12 +791,12 @@ export const TacticalMatrixView: React.FC<TacticalMatrixViewProps> = ({
                               </div>
 
                               <div className="text-xs font-bold text-[#161514] leading-snug group-hover:text-[#b81d18] transition-colors">
-                                {tech.nameEn}
+                                {tech.namePt}
                               </div>
 
                               {!compactMode && (
                                 <div className="text-[11px] text-[#4a4742] leading-tight mt-1">
-                                  {tech.namePt}
+                                  MITRE: {tech.nameEn}
                                 </div>
                               )}
                             </div>
@@ -817,7 +817,7 @@ export const TacticalMatrixView: React.FC<TacticalMatrixViewProps> = ({
                                       {sub.id}
                                     </div>
                                     <div className="text-[11px] font-semibold leading-tight">
-                                      {sub.nameEn}
+                                      {sub.namePt}
                                     </div>
                                   </button>
                                 ))}

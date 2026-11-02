@@ -42,7 +42,7 @@ export const TraceBreadcrumbBar: React.FC<TraceBreadcrumbBarProps> = ({
         <div className="flex items-center gap-1.5 shrink-0">
           <span className="text-[10px] font-mono font-bold text-[#161514] uppercase tracking-widest flex items-center gap-1 mr-1">
             <History className="w-3.5 h-3.5 text-[#b81d18]" />
-            LOG DE NAVEGAÇÃO //
+            HISTÓRICO DE NAVEGAÇÃO //
           </span>
 
           <button

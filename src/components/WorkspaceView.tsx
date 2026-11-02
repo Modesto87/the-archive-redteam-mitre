@@ -43,25 +43,26 @@ export const WorkspaceView: React.FC<WorkspaceViewProps> = ({
   const handleExportMarkdown = () => {
     cyberAudio.playBreach();
     const lines: string[] = [
-      `# THE ARCHIVE // RED TEAM — OFFENSIVE SECURITY FIELD NOTES`,
-      `**Operação / Engagement:** ${workspace.engagementName || 'Red Team Assessment'}`,
+      `# THE ARCHIVE // RED TEAM — NOTAS DE CAMPO DE SEGURANÇA OFENSIVA`,
+      `**Operação:** ${workspace.engagementName || 'Avaliação de Red Team'}`,
       `**Âmbito / Alvo:** ${workspace.targetScope || 'Infraestrutura Corporativa'}`,
       `**Data de Exportação:** ${new Date().toISOString().slice(0, 10)}`,
       `**Classificação:** TLP:AMBER`,
       ``,
       `---`,
-      `## 1. Cadeia de Ataque Mapeada (MITRE ATT&CK Kill Chain)`,
+      `## 1. Cadeia de ataque mapeada (MITRE ATT&CK)`,
       ``
     ];
 
     if (allActiveTechs.length === 0) {
-      lines.push(`_Nenhuma técnica registada nas Field Notes até ao momento._`);
+      lines.push(`_Nenhuma técnica registada nas notas de campo até ao momento._`);
     } else {
       for (const t of allActiveTechs) {
         const tacLabels = t.tactics
           .map(s => tacticsByShortname.get(s)?.namePt || s)
           .join(', ');
-        lines.push(`### [${t.id}] ${t.fullNameEn} (${t.fullNamePt})`);
+        lines.push(`### [${t.id}] ${t.fullNamePt}`);
+        lines.push(`- **Nome original MITRE:** ${t.fullNameEn}`);
         lines.push(`- **Táticas:** ${tacLabels}`);
         lines.push(`- **Plataformas:** ${t.platforms.join(', ')}`);
         lines.push(`- **Referência Oficial:** ${t.url}`);
@@ -100,10 +101,10 @@ export const WorkspaceView: React.FC<WorkspaceViewProps> = ({
           <div>
             <div className="text-xs font-mono font-bold text-[#b81d18] uppercase tracking-widest flex items-center gap-1.5">
               <Crosshair className="w-4 h-4" />
-              THE ARCHIVE // RED TEAM — PERSONAL FIELD NOTES &amp; KILL CHAIN (100% OFFLINE)
+              THE ARCHIVE // RED TEAM — NOTAS PESSOAIS E CADEIA DE ATAQUE (ARMAZENAMENTO LOCAL)
             </div>
             <h2 className="text-3xl font-slab uppercase text-[#161514] mt-1">
-              OPERATIONAL FIELD NOTES &amp; KILL CHAIN
+              NOTAS OPERACIONAIS E CADEIA DE ATAQUE
             </h2>
             <p className="text-sm text-[#262421] mt-1">
               Organize as técnicas utilizadas ou planeadas para a sua operação, registe evidências de campo e exporte o dossier técnico em Markdown.
@@ -117,7 +118,7 @@ export const WorkspaceView: React.FC<WorkspaceViewProps> = ({
               className="px-4 py-2.5 bg-[#161514] hover:bg-[#b81d18] text-[#f4efe6] font-mono font-bold text-xs uppercase tracking-wider flex items-center gap-2 cursor-pointer transition-colors"
             >
               <Download className="w-4 h-4" />
-              EXPORTAR FIELD NOTES (.MD)
+              EXPORTAR NOTAS DE CAMPO (.MD)
             </button>
 
             {allActiveTechs.length > 0 && (
@@ -143,7 +144,7 @@ export const WorkspaceView: React.FC<WorkspaceViewProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-3 border-t-2 border-[#161514]">
           <div>
             <label className="text-xs font-mono font-bold text-[#161514] uppercase block mb-1">
-              CÓDIGO DA OPERAÇÃO / ENGAGEMENT:
+              CÓDIGO DA OPERAÇÃO:
             </label>
             <input
               type="text"
@@ -151,7 +152,7 @@ export const WorkspaceView: React.FC<WorkspaceViewProps> = ({
               onChange={e =>
                 onUpdateWorkspace(prev => ({ ...prev, engagementName: e.target.value }))
               }
-              placeholder="Ex: RT-ARCH-03 // Red Team Assessment"
+              placeholder="Ex: RT-ARCH-03 // Avaliação de Red Team"
               className="w-full px-3 py-2 bg-[#ece6da] border border-[#161514] text-sm font-mono text-[#161514] outline-none"
             />
           </div>
@@ -177,10 +178,10 @@ export const WorkspaceView: React.FC<WorkspaceViewProps> = ({
         <div className="p-12 bg-[#f4efe6] border-2 border-[#161514] text-center space-y-3">
           <Bookmark className="w-10 h-10 text-[#b81d18] mx-auto" />
           <h3 className="text-xl font-slab uppercase text-[#161514]">
-            NENHUMA TÉCNICA ARQUIVADA NAS FIELD NOTES
+            NENHUMA TÉCNICA ARQUIVADA NAS NOTAS DE CAMPO
           </h3>
           <p className="text-sm text-[#4a4742] max-w-xl mx-auto">
-            Navegue pelos Volumes do <strong>THE ARCHIVE</strong> e clique em <code className="text-[#b81d18] font-bold">+ FIELD NOTES</code> em qualquer técnica para construir a sua Kill Chain e registar notas de operação.
+            Navegue pelos Volumes do <strong>THE ARCHIVE</strong> e clique em <code className="text-[#b81d18] font-bold">+ NOTAS DE CAMPO</code> em qualquer técnica para construir a sua cadeia de ataque e registar notas de operação.
           </p>
         </div>
       ) : (
@@ -208,7 +209,7 @@ export const WorkspaceView: React.FC<WorkspaceViewProps> = ({
                         }}
                         className="font-condensed font-bold text-lg uppercase text-[#161514] hover:text-[#b81d18] cursor-pointer flex items-center gap-1"
                       >
-                        {tech.fullNameEn}
+                        {tech.fullNamePt}
                         <ExternalLink className="w-3.5 h-3.5 text-[#b81d18]" />
                       </button>
                     </div>
@@ -229,7 +230,7 @@ export const WorkspaceView: React.FC<WorkspaceViewProps> = ({
                     )}
                   </div>
 
-                  <p className="text-xs font-mono font-bold text-[#b81d18]">{tech.fullNamePt}</p>
+                  <p className="text-xs font-mono font-bold text-[#b81d18]">MITRE: {tech.fullNameEn}</p>
 
                   <div>
                     <label className="text-[11px] font-mono font-bold text-[#161514] uppercase flex items-center gap-1 mb-1">

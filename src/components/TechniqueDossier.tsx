@@ -240,7 +240,7 @@ export const TechniqueDossier: React.FC<TechniqueDossierProps> = ({
               </span>
               <span>•</span>
               <span>
-                CLASS // <strong className="text-[#b81d18]">TLP:AMBER</strong>
+                CLASSIF. // <strong className="text-[#b81d18]">TLP:AMBER</strong>
               </span>
               <span>•</span>
               <span>VER // {technique.version}</span>
@@ -255,21 +255,21 @@ export const TechniqueDossier: React.FC<TechniqueDossierProps> = ({
                   className="px-2 py-0.5 bg-[#161514] text-[#f4efe6] hover:bg-[#b81d18] text-[10px] font-mono font-bold transition-colors cursor-pointer flex items-center gap-1"
                 >
                   <GitBranch className="w-3 h-3" />
-                  PAI: {parentTech.id} ({parentTech.nameEn})
+                  PAI: {parentTech.id} ({parentTech.namePt})
                 </button>
               )}
             </div>
 
             {/* Título Principal em Slab Serif Pesada */}
             <h2 className="text-2xl md:text-3xl font-slab text-[#161514] uppercase leading-tight tracking-wide pt-1">
-              {technique.fullNameEn}
+              {technique.fullNamePt}
             </h2>
 
             {/* Subtítulo em Português com Faixa Vermelha */}
             <div className="flex items-center gap-2 pt-0.5">
               <span className="w-5 h-1.5 bg-[#b81d18] inline-block shrink-0" />
               <p className="text-sm md:text-base font-condensed font-bold uppercase tracking-wider text-[#b81d18]">
-                {technique.fullNamePt}
+                MITRE: {technique.fullNameEn}
               </p>
             </div>
 
@@ -320,7 +320,7 @@ export const TechniqueDossier: React.FC<TechniqueDossierProps> = ({
               }`}
             >
               <Bookmark className="w-3.5 h-3.5 fill-current" />
-              {isBookmarked ? 'ARCHIVED IN KILL CHAIN' : '+ FIELD NOTES'}
+              {isBookmarked ? 'ARQUIVADO NA CADEIA DE ATAQUE' : '+ NOTAS DE CAMPO'}
             </button>
 
             {technique.url && (
@@ -398,7 +398,7 @@ export const TechniqueDossier: React.FC<TechniqueDossierProps> = ({
 
       {/* Corpo Rolável do Dossier */}
       <div className="flex-1 overflow-y-auto p-5 space-y-6">
-        {/* 1. PÍLULAS DE NAVEGAÇÃO RÁPIDA ENTRE SUB-TÉCNICAS / VARIANTES */}
+        {/* 1. PÍLULAS DE NAVEGAÇÃO RÁPIDA ENTRE SUBTÉCNICAS / VARIANTES */}
         {subtechs.length > 0 && (
           <div className="p-3.5 bg-[#ece6da] border border-[#161514] space-y-2">
             <div className="flex items-center justify-between">
@@ -406,7 +406,7 @@ export const TechniqueDossier: React.FC<TechniqueDossierProps> = ({
                 <GitBranch className="w-3.5 h-3.5 text-[#b81d18]" />
                 {technique.isSubtechnique
                   ? `ÍNDICE DE VARIANTES DE ${parentTech?.id} (${subtechs.length}):`
-                  : `SUB-TÉCNICAS ESPECIALIZADAS DE ${technique.id} (${subtechs.length}):`}
+                  : `SUBTÉCNICAS ESPECIALIZADAS DE ${technique.id} (${subtechs.length}):`}
               </span>
               {technique.isSubtechnique && parentTech && (
                 <button
@@ -441,7 +441,7 @@ export const TechniqueDossier: React.FC<TechniqueDossierProps> = ({
                     }`}
                   >
                     <span className="font-bold">{st.id}</span>
-                    <span>{st.nameEn}</span>
+                    <span>{st.namePt}</span>
                   </button>
                 );
               })}
@@ -449,7 +449,7 @@ export const TechniqueDossier: React.FC<TechniqueDossierProps> = ({
           </div>
         )}
 
-        {/* 2. SECÇÃO ICE BREAKER & TRADECRAFT DE DESBLOQUEIO */}
+        {/* 2. SECÇÃO ICE BREAKER & PRÁTICAS OPERACIONAIS DE DESBLOQUEIO */}
         {showBypass && (
           <div className="space-y-4">
             {/* Playbooks ICE Breaker Interligados */}
@@ -458,7 +458,7 @@ export const TechniqueDossier: React.FC<TechniqueDossierProps> = ({
                 <div className="flex items-center justify-between gap-2 border-b border-[#b81d18]/30 pb-2">
                   <span className="text-xs font-mono font-bold uppercase text-[#b81d18] flex items-center gap-1.5">
                     <Unlock className="w-4 h-4" />
-                    FIELD MANUAL PLAYBOOKS // CENÁRIOS DE DESBLOQUEIO ASSOCIADOS ({relatedScenarios.length})
+                    PROCEDIMENTOS DO MANUAL DE CAMPO // CENÁRIOS DE DESBLOQUEIO ASSOCIADOS ({relatedScenarios.length})
                   </span>
                   <span className="text-[10px] font-mono text-[#5c5852] uppercase">
                     CLIQUE PARA ABRIR O PROCEDIMENTO COMPLETO
@@ -493,7 +493,7 @@ export const TechniqueDossier: React.FC<TechniqueDossierProps> = ({
                         }}
                         className="px-3 py-1.5 bg-[#161514] hover:bg-[#b81d18] text-[#f4efe6] font-mono text-xs font-bold uppercase shrink-0 cursor-pointer flex items-center gap-1 transition-colors"
                       >
-                        ABRIR PLAYBOOK <ArrowRight className="w-3.5 h-3.5" />
+                        ABRIR PROCEDIMENTO <ArrowRight className="w-3.5 h-3.5" />
                       </button>
                     </div>
                   ))}
@@ -525,7 +525,7 @@ export const TechniqueDossier: React.FC<TechniqueDossierProps> = ({
               <div className="p-4 bg-[#ece6da] border border-[#161514] space-y-2.5">
                 <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-[#161514] flex items-center gap-1.5 border-b border-[#161514]/20 pb-1.5">
                   <Crosshair className="w-4 h-4 text-[#b81d18]" />
-                  TRADECRAFT DE EVASÃO &amp; CONTORNO (BYPASS)
+                  PRÁTICAS DE EVASÃO &amp; CONTORNO (BYPASS)
                 </h4>
                 <div className="space-y-2">
                   {technique.bypassGuide.bypasses.map((byp, i) => (
@@ -545,7 +545,7 @@ export const TechniqueDossier: React.FC<TechniqueDossierProps> = ({
               <div className="p-4 bg-[#ece6da] border border-[#161514] space-y-2">
                 <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-[#8f1410] flex items-center gap-1.5">
                   <AlertTriangle className="w-4 h-4" />
-                  PONTOS CEGOS DE TELEMETRIA &amp; WHITELISTS (MITRE MUTABLE ELEMENTS)
+                  PARÂMETROS AJUSTÁVEIS DAS REGRAS DE DETEÇÃO
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                   {technique.bypassGuide.blindSpots.map((bs, i) => (
@@ -562,7 +562,7 @@ export const TechniqueDossier: React.FC<TechniqueDossierProps> = ({
           </div>
         )}
 
-        {/* 3. SECÇÃO TEORIA ACADÊMICA & COMANDOS CLI */}
+        {/* 3. SECÇÃO TEORIA ACADÉMICA & COMANDOS CLI */}
         {showAcademic && (
           <div className="space-y-4">
             {/* Comandos & Snippets Extraídos */}
@@ -600,15 +600,15 @@ export const TechniqueDossier: React.FC<TechniqueDossierProps> = ({
               </div>
             )}
 
-            {/* Especificação Acadêmica Completa */}
+            {/* Especificação Académica Completa */}
             <div className="p-5 bg-[#f4efe6] border border-[#161514] space-y-3">
               <div className="flex items-center justify-between border-b-2 border-[#161514] pb-2">
                 <h3 className="text-xs font-mono font-bold uppercase tracking-widest text-[#161514] flex items-center gap-2">
                   <BookOpen className="w-4 h-4 text-[#b81d18]" />
-                  FUNDAMENTAÇÃO ACADÊMICA &amp; MECÂNICA OPERACIONAL // {technique.id}
+                  FUNDAMENTAÇÃO ACADÉMICA &amp; MECÂNICA OPERACIONAL // {technique.id}
                 </h3>
                 <span className="text-[10px] font-mono text-[#b81d18] font-bold">
-                  OFFENSIVE SECURITY FIELD NOTES
+                  NOTAS DE CAMPO DE SEGURANÇA OFENSIVA
                 </span>
               </div>
               <RichTechnicalText
@@ -625,7 +625,7 @@ export const TechniqueDossier: React.FC<TechniqueDossierProps> = ({
             <div className="p-4 bg-[#ece6da] border border-[#161514] space-y-3">
               <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-[#161514] flex items-center gap-2 border-b border-[#161514]/25 pb-2">
                 <Eye className="w-4 h-4 text-[#b81d18]" />
-                ESTRATÉGIAS DE DETEÇÃO &amp; FONTES DE LOG ({technique.detections.length})
+                ESTRATÉGIAS DE DETEÇÃO &amp; FONTES DE REGISTOS ({technique.detections.length})
               </h3>
 
               {technique.detections.length === 0 ? (
@@ -668,7 +668,7 @@ export const TechniqueDossier: React.FC<TechniqueDossierProps> = ({
                                   key={idx}
                                   className="px-1.5 py-0.5 text-[10px] font-mono bg-[#161514] text-[#f4efe6]"
                                 >
-                                  LOG: {ls.name} → {ls.channel}
+                                  REGISTO: {ls.name} → {ls.channel}
                                 </span>
                               ))}
                             </div>
@@ -778,7 +778,7 @@ export const TechniqueDossier: React.FC<TechniqueDossierProps> = ({
               <div className="p-4 bg-[#ece6da] border border-[#161514] space-y-2">
                 <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-[#161514] flex items-center gap-2">
                   <BookOpen className="w-4 h-4 text-[#b81d18]" />
-                  BIBLIOGRAFIA ACADÊMICA &amp; FONTES TÉCNICAS
+                  BIBLIOGRAFIA ACADÉMICA &amp; FONTES TÉCNICAS
                 </h3>
                 <div className="space-y-1.5">
                   {technique.references.map((ref, idx) => (
@@ -809,7 +809,7 @@ export const TechniqueDossier: React.FC<TechniqueDossierProps> = ({
           <div className="p-4 bg-[#ece6da] border-2 border-[#161514] space-y-2.5">
             <h3 className="text-xs font-mono font-bold text-[#161514] uppercase flex items-center gap-1.5">
               <FileEdit className="w-4 h-4 text-[#b81d18]" />
-              REGISTO DE CAMPO DO OPERADOR (FIELD NOTES // {technique.id})
+              REGISTO DE CAMPO DO OPERADOR (NOTAS DE CAMPO // {technique.id})
             </h3>
             <textarea
               value={operatorNote}

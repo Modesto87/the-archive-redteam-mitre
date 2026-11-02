@@ -50,7 +50,7 @@ for (let i = 0; i < matrixObj.tactic_refs.length; i++) {
     nameEn: tObj.name,
     namePt: metaPt.namePt,
     subtitle: metaPt.subtitle,
-    descriptionPt: metaPt.descriptionPt,
+    descriptionPt: translateTechnicalProse(tObj.description || ''),
     pentesterRole: metaPt.pentesterRole,
     color: metaPt.color,
     url: getMitreUrl(tObj)
@@ -65,7 +65,7 @@ for (const obj of objects) {
   if (obj.type === 'x-mitre-analytic') {
     analyticsByStixId.set(obj.id, {
       id: getMitreId(obj),
-      name: obj.name,
+      name: translateTechnicalProse(obj.name),
       descriptionPt: translateTechnicalProse(obj.description || ''),
       platforms: obj.x_mitre_platforms || [],
       logSources: (obj.x_mitre_log_source_references || []).map(ls => ({
@@ -74,7 +74,7 @@ for (const obj of objects) {
       })),
       mutableElements: (obj.x_mitre_mutable_elements || []).map(me => ({
         field: me.field,
-        description: me.description
+        description: translateTechnicalProse(me.description)
       }))
     });
   }
@@ -89,7 +89,7 @@ for (const obj of objects) {
       .filter(Boolean);
     detectionByStixId.set(obj.id, {
       id: getMitreId(obj),
-      name: obj.name,
+      name: translateTechnicalProse(obj.name),
       url: getMitreUrl(obj),
       analytics: analytics.slice(0, 4)
     });
@@ -104,7 +104,7 @@ for (const obj of objects) {
     const bypassInfo = MITIGATION_BYPASS_MAP[mId] || null;
     mitigationByStixId.set(obj.id, {
       id: mId,
-      name: obj.name,
+      name: translateTechnicalProse(obj.name),
       descriptionPt: translateTechnicalProse(obj.description || ''),
       url: getMitreUrl(obj),
       bypassHint: bypassInfo ? bypassInfo.bypassStrategyPt : null
@@ -160,7 +160,7 @@ for (const rel of objects) {
       mitigationsForAp.get(tgt).push({
         id: mit.id,
         name: mit.name,
-        descriptionPt: translateTechnicalProse(rel.description || mit.descriptionPt),
+        descriptionPt: rel.description ? translateTechnicalProse(rel.description) : mit.descriptionPt,
         bypassHint: mit.bypassHint
       });
     }
@@ -181,7 +181,7 @@ for (const rel of objects) {
           id: sw.id,
           name: sw.name,
           type: sw.type,
-          procedurePt: rel.description ? translateTechnicalProse(rel.description).slice(0, 320) : ''
+          procedurePt: rel.description ? translateTechnicalProse(rel.description) : ''
         });
       }
     }
@@ -193,7 +193,7 @@ for (const rel of objects) {
         list.push({
           id: grp.id,
           name: grp.name,
-          procedurePt: rel.description ? translateTechnicalProse(rel.description).slice(0, 320) : ''
+          procedurePt: rel.description ? translateTechnicalProse(rel.description) : ''
         });
       }
     }
@@ -215,7 +215,7 @@ for (const ap of rawTechniques) {
     if (!subsByParentId.has(parentId)) subsByParentId.set(parentId, []);
     subsByParentId.get(parentId).push({
       id: mId,
-      name: ap.name,
+      name: translateTechniqueName(ap.name),
       stixId: ap.id
     });
   }
@@ -264,7 +264,7 @@ for (const ap of rawTechniques) {
     .slice(0, 6)
     .map(r => ({
       source: r.source_name,
-      description: r.description || r.source_name,
+      description: r.description ? translateTechnicalProse(r.description) : r.source_name,
       url: r.url
     }));
 
@@ -318,7 +318,7 @@ for (const ap of rawTechniques) {
 
 allTechniques.sort((a, b) => a.id.localeCompare(b.id));
 
-const outDir = path.resolve('public/data');
+const outDir = path.resolve(process.env.COLLECT_TRANSLATIONS === '1' ? '.translation-work' : 'public/data');
 fs.mkdirSync(outDir, { recursive: true });
 
 const catalogPayload = {

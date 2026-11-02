@@ -7,6 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "rebuild-catalog": "node scripts/build-mitre-catalog.mjs",
+    "test": "node --test scripts/*.test.mjs",
+    "check-translations": "node scripts/check-translations.mjs",
     "lint": "oxlint",
     "preview": "vite preview"
   },

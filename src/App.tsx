@@ -46,7 +46,7 @@ export function App() {
 
   const [traceHistory, setTraceHistory] = useState<TraceHistoryItem[]>([
     { type: 'tactic', id: 'TA0006', label: 'Acesso a Credenciais' },
-    { type: 'technique', id: 'T1003.001', label: 'LSASS Memory' }
+    { type: 'technique', id: 'T1003.001', label: 'Memória do LSASS' }
   ]);
   const [traceIndex, setTraceIndex] = useState<number>(1);
 
@@ -62,8 +62,8 @@ export function App() {
     return {
       bookmarkedIds: ['T1003.001', 'T1059.001', 'T1649', 'T1055.012'],
       notesByTechniqueId: {},
-      engagementName: 'RT-ARCH-03 // Adversary Operations',
-      targetScope: 'Active Directory & Enterprise Infrastructure'
+      engagementName: 'RT-ARCH-03 // Operações adversárias',
+      targetScope: 'Active Directory e infraestrutura empresarial'
     };
   });
 
@@ -177,7 +177,7 @@ export function App() {
         pushTrace({
           type: 'technique',
           id: tech.id,
-          label: tech.nameEn
+          label: tech.namePt
         });
       }
 
@@ -327,7 +327,7 @@ export function App() {
             THE ARCHIVE // RED TEAM
           </div>
           <p className="text-xs font-mono text-[#b81d18] uppercase tracking-widest">
-            A carregar 706 técnicas MITRE ATT&amp;CK e Playbooks de Evasão...
+            A carregar 706 técnicas MITRE ATT&amp;CK e procedimentos de evasão...
           </p>
         </div>
       </div>
@@ -350,10 +350,10 @@ export function App() {
 
   const spineVolTitle =
     activeTab === 'icebreaker'
-      ? 'EVASION & UNBLOCK'
+      ? 'EVASÃO E DESBLOQUEIO'
       : activeTacticObj
-        ? activeTacticObj.nameEn.toUpperCase()
-        : 'COMPLETE MATRIX';
+        ? activeTacticObj.namePt.toUpperCase()
+        : 'MATRIZ COMPLETA';
 
   const spineRefCode = `RT-ARCH-${spineVolNumber}`;
 
@@ -371,15 +371,15 @@ export function App() {
           <div className="max-w-[1800px] mx-auto px-4 lg:px-8 pt-4 pb-3 space-y-3">
             {/* Linha 1: Metadados Técnicos de Topo (Globo + 3 Colunas de Classificação + Pesquisa) */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center border-b border-[#161514]/30 pb-3">
-              {/* Bloco Esquerdo: Globo Wireframe + INTELLIGENCE / TRADECRAFT */}
+              {/* Bloco Esquerdo: Globo Wireframe + INFORMAÇÕES / PRÁTICAS OPERACIONAIS */}
               <div className="lg:col-span-4 flex items-center gap-4">
                 <ArchiveWireframeGlobe className="w-11 h-11 text-[#161514] shrink-0" />
                 <div className="h-11 w-px bg-[#161514]" />
                 <div className="text-[10px] font-mono font-bold tracking-[0.22em] uppercase leading-tight text-[#161514]">
-                  <div>INTELLIGENCE</div>
-                  <div>TRADECRAFT</div>
-                  <div>OFFENSIVE SECURITY</div>
-                  <div>FIELD NOTES</div>
+                  <div>INFORMAÇÕES</div>
+                  <div>PRÁTICAS OPERACIONAIS</div>
+                  <div>SEGURANÇA OFENSIVA</div>
+                  <div>NOTAS DE CAMPO</div>
                 </div>
               </div>
 
@@ -396,15 +396,15 @@ export function App() {
                     VOL &nbsp;&nbsp;// <span className="font-semibold">{spineVolNumber}</span>
                   </div>
                   <div>
-                    CLASS // <span className="text-[#b81d18] font-bold">TLP:AMBER</span>
+                    CLASSIF. // <span className="text-[#b81d18] font-bold">TLP:AMBER</span>
                   </div>
                 </div>
 
                 <div className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase leading-tight text-[#161514]">
-                  <div>PEOPLE</div>
-                  <div>SYSTEMS</div>
-                  <div>INFRASTRUCTURE</div>
-                  <div>ATTACK SURFACE</div>
+                  <div>PESSOAS</div>
+                  <div>SISTEMAS</div>
+                  <div>INFRAESTRUTURA</div>
+                  <div>SUPERFÍCIE DE ATAQUE</div>
                   <div className="w-5 h-1 bg-[#b81d18] mt-1" />
                 </div>
               </div>
@@ -423,7 +423,7 @@ export function App() {
                         setGlobalSearch(e.target.value);
                         setShowQuickSearchDropdown(true);
                       }}
-                      placeholder="Pesquisar técnica (T1003), tool ou bloqueio [Ctrl+K]..."
+                      placeholder="Pesquisar técnica (T1003), ferramenta ou bloqueio [Ctrl+K]..."
                       className="w-full pl-9 pr-14 py-1.5 bg-[#f4efe6] border-2 border-[#161514] text-xs font-mono text-[#161514] placeholder:text-[#6e6a63] outline-none"
                     />
                     {globalSearch ? (
@@ -450,7 +450,7 @@ export function App() {
                       quickSearchResults.techniques.length > 0) && (
                       <div className="absolute left-0 right-0 top-full mt-1 bg-[#f4efe6] border-2 border-[#161514] shadow-2xl z-50 max-h-96 overflow-y-auto">
                         <div className="px-3 py-1.5 bg-[#161514] text-[#f4efe6] flex items-center justify-between text-[10px] font-mono font-bold">
-                          <span>ÍNDICE RÁPIDO // PLAYBOOKS &amp; TÉCNICAS</span>
+                          <span>ÍNDICE RÁPIDO // PROCEDIMENTOS &amp; TÉCNICAS</span>
                           <button
                             type="button"
                             onClick={() => setShowQuickSearchDropdown(false)}
@@ -474,7 +474,7 @@ export function App() {
                             <div>
                               <div className="flex items-center gap-2">
                                 <span className="px-1.5 py-0.2 bg-[#b81d18] group-hover:bg-[#161514] text-[#f4efe6] font-mono text-[10px] font-bold">
-                                  PLAYBOOK BYPASS
+                                  PROCEDIMENTO DE CONTORNO
                                 </span>
                                 <span className="font-bold text-xs">{scen.title}</span>
                               </div>
@@ -504,9 +504,9 @@ export function App() {
                                 <span className="font-mono text-xs font-bold text-[#b81d18] group-hover:text-[#f4efe6]">
                                   {res.id}
                                 </span>
-                                <span className="font-bold text-xs">{res.fullNameEn}</span>
+                                <span className="font-bold text-xs">{res.fullNamePt}</span>
                               </div>
-                              <div className="text-[11px] opacity-80">{res.fullNamePt}</div>
+                              <div className="text-[11px] opacity-80">MITRE: {res.fullNameEn}</div>
                             </div>
                             <span className="text-[10px] font-mono font-bold shrink-0">
                               DOSSIER →
@@ -560,23 +560,23 @@ export function App() {
               {[
                 {
                   id: 'matrix',
-                  label: '01 // VOLUMES & FIELD MANUAL (MATRIZ MITRE)',
+                  label: '01 // VOLUMES E MANUAL DE CAMPO (MATRIZ MITRE)',
                   icon: Grid
                 },
                 {
                   id: 'icebreaker',
-                  label: '02 // EVASION & UNBLOCK PLAYBOOKS (ESTOU BLOQUEADO)',
+                  label: '02 // PROCEDIMENTOS DE EVASÃO E DESBLOQUEIO (ESTOU BLOQUEADO)',
                   icon: Zap,
                   highlight: true
                 },
                 {
                   id: 'catalog',
-                  label: `03 // COMPLETE ARCHIVE INDEX (${catalog.metadata.counts.totalTechniques} TÉCNICAS)`,
+                  label: `03 // ÍNDICE COMPLETO DO ARQUIVO (${catalog.metadata.counts.totalTechniques} TÉCNICAS)`,
                   icon: BookOpen
                 },
                 {
                   id: 'workspace',
-                  label: `04 // PERSONAL FIELD NOTES & KILL CHAIN (${workspace.bookmarkedIds.length})`,
+                  label: `04 // NOTAS PESSOAIS E CADEIA DE ATAQUE (${workspace.bookmarkedIds.length})`,
                   icon: Bookmark
                 }
               ].map(tab => {
@@ -710,9 +710,9 @@ export function App() {
             </div>
 
             <div className="text-center tracking-[0.2em] uppercase font-bold">
-              <div>OFFENSIVE SECURITY FIELD NOTES // MITRE ATT&amp;CK® {catalog.metadata.specVersion}</div>
+              <div>NOTAS DE CAMPO DE SEGURANÇA OFENSIVA // MITRE ATT&amp;CK® {catalog.metadata.specVersion}</div>
               <div className="text-[#4a4742] text-[10px]">
-                KNOWLEDGE PRECEDES ACCESS • PREPARAÇÃO • RECONHECIMENTO • OPERAÇÕES ADVERSÁRIAS
+                O CONHECIMENTO PRECEDE O ACESSO • PREPARAÇÃO • RECONHECIMENTO • OPERAÇÕES ADVERSÁRIAS
               </div>
             </div>
 

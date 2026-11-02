@@ -115,20 +115,20 @@ export const IceBreakerView: React.FC<IceBreakerViewProps> = ({
               </div>
               <div className="h-10 w-0.5 bg-[#161514]" />
               <div className="text-[10px] font-mono font-bold tracking-[0.22em] uppercase text-[#161514] leading-snug">
-                <div>DEFENSE EVASION</div>
-                <div>UNBLOCK PLAYBOOKS</div>
+                <div>EVASÃO DE DEFESAS</div>
+                <div>PROCEDIMENTOS DE DESBLOQUEIO</div>
                 <div>LOLBAS &amp; GTFOBINS</div>
-                <div>OPSEC TRADECRAFT</div>
+                <div>PRÁTICAS DE OPSEC</div>
               </div>
             </div>
 
             <h2 className="text-3xl md:text-4xl font-slab uppercase text-[#161514] tracking-wide">
-              ADVERSARY EVASION &amp; UNBLOCK MANUAL
+              MANUAL DE EVASÃO E DESBLOQUEIO
             </h2>
 
             <div className="border-t-2 border-[#161514] border-b-2 border-b-[#b81d18] py-1.5">
               <div className="font-condensed font-bold text-sm tracking-[0.25em] uppercase text-[#161514]">
-                OFFENSIVE SECURITY FIELD NOTES // QUANDO O PENTESTER ESTÁ BLOQUEADO
+                NOTAS DE CAMPO DE SEGURANÇA OFENSIVA // QUANDO O PENTESTER ESTÁ BLOQUEADO
               </div>
               <div className="font-mono font-bold text-[10.5px] tracking-[0.18em] uppercase text-[#b81d18]">
                 AMSI • RUNASPPL • EDR HOOKS • APPLOCKER • PROTECTED USERS • FIREWALL EGRESS • MFA • WAF
@@ -139,7 +139,7 @@ export const IceBreakerView: React.FC<IceBreakerViewProps> = ({
           {/* Seletor de Sub-Modo */}
           <div className="flex flex-col sm:flex-row lg:flex-col gap-2 shrink-0 xl:mr-28">
             {[
-              { id: 'scenarios', label: '01 // 16 PLAYBOOKS DE DESBLOQUEIO', icon: Unlock },
+              { id: 'scenarios', label: '01 // 16 PROCEDIMENTOS DE DESBLOQUEIO', icon: Unlock },
               { id: 'lolbas', label: '02 // ARSENAL LOLBAS & GTFOBINS', icon: Terminal },
               { id: 'mitigations', label: '03 // MATRIZ ANTI-MITIGAÇÃO (M1xxx)', icon: Layers }
             ].map(tab => {
@@ -227,7 +227,7 @@ export const IceBreakerView: React.FC<IceBreakerViewProps> = ({
                   >
                     <div className="flex items-center justify-between gap-2 mb-1">
                       <span className="text-[10px] font-mono font-bold uppercase px-1.5 py-0.5 bg-[#161514] text-[#f4efe6]">
-                        CASE #{String(idx + 1).padStart(2, '0')} // {scen.category}
+                        CASO #{String(idx + 1).padStart(2, '0')} // {scen.category}
                       </span>
                       <span
                         className={`text-[10px] font-mono font-bold px-1.5 py-0.5 ${
@@ -282,7 +282,7 @@ export const IceBreakerView: React.FC<IceBreakerViewProps> = ({
                     <div className="p-3 bg-[#ece6da] border-l-4 border-[#161514] text-xs md:text-sm text-[#262421] leading-relaxed">
                       <strong className="text-[#161514] font-mono text-xs uppercase block mb-1 flex items-center gap-1.5">
                         <Cpu className="w-4 h-4 text-[#b81d18]" />
-                        ANÁLISE ACADÊMICA &amp; MECÂNICA DA DEFESA:
+                        ANÁLISE ACADÉMICA &amp; MECÂNICA DA DEFESA:
                       </strong>
                       {activeScenario.academicContext}
                     </div>
@@ -297,10 +297,10 @@ export const IceBreakerView: React.FC<IceBreakerViewProps> = ({
                             {quickPreviewTech.id}
                           </span>
                           <h4 className="font-condensed font-bold text-lg uppercase text-[#161514]">
-                            {quickPreviewTech.fullNameEn}
+                            {quickPreviewTech.fullNamePt}
                           </h4>
                           <span className="text-xs font-mono text-[#4a4742]">
-                            // {quickPreviewTech.fullNamePt}
+                            MITRE: {quickPreviewTech.fullNameEn}
                           </span>
                         </div>
 
@@ -335,7 +335,7 @@ export const IceBreakerView: React.FC<IceBreakerViewProps> = ({
                   <div className="space-y-3.5">
                     <h4 className="text-xs font-mono font-bold uppercase tracking-widest text-[#b81d18] flex items-center gap-2">
                       <Unlock className="w-4 h-4" />
-                      PROCEDIMENTOS DE CONTORNO VERIFICADOS ({activeScenario.bypassSteps.length} METODOLOGIAS)
+                      PROCEDIMENTOS DE CONTORNO ({activeScenario.bypassSteps.length} METODOLOGIAS)
                     </h4>
 
                     {activeScenario.bypassSteps.map((step, idx) => (
@@ -402,7 +402,7 @@ export const IceBreakerView: React.FC<IceBreakerViewProps> = ({
                                   <span>{mId}</span>
                                   {tech && (
                                     <span className="text-[11px] opacity-85 font-normal">
-                                      ({tech.nameEn})
+                                      ({tech.namePt})
                                     </span>
                                   )}
                                 </button>

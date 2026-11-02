@@ -86,7 +86,7 @@ export const CatalogExplorerView: React.FC<CatalogExplorerViewProps> = ({
                 setLocalSearch(e.target.value);
                 setVisibleLimit(48);
               }}
-              placeholder="Pesquisa em todas as 706 fichas de arquivo (ID, nome em Inglês/Português, APIs, comandos, tools como Mimikatz/Rubeus/Impacket)..."
+              placeholder="Pesquisa em todas as 706 fichas de arquivo (ID, nome em inglês/português, APIs, comandos, ferramentas como Mimikatz/Rubeus/Impacket)..."
               className="w-full pl-10 pr-4 py-2.5 bg-[#f4efe6] border border-[#161514] text-sm font-mono text-[#161514] placeholder:text-[#6e6a63] outline-none"
             />
           </div>
@@ -136,7 +136,7 @@ export const CatalogExplorerView: React.FC<CatalogExplorerViewProps> = ({
             {[
               { id: 'ALL', label: 'TODAS (706)' },
               { id: 'PARENT', label: 'TÉCNICAS PRINCIPAIS (227)' },
-              { id: 'SUB', label: 'SUB-TÉCNICAS (479)' }
+              { id: 'SUB', label: 'SUBTÉCNICAS (479)' }
             ].map(btn => (
               <button
                 key={btn.id}
@@ -170,7 +170,7 @@ export const CatalogExplorerView: React.FC<CatalogExplorerViewProps> = ({
               }`}
             >
               <Terminal className="w-3.5 h-3.5" />
-              COM COMANDOS / SNIPPETS CLI
+              COM COMANDOS / EXCERTOS CLI
             </button>
           </div>
 
@@ -181,7 +181,7 @@ export const CatalogExplorerView: React.FC<CatalogExplorerViewProps> = ({
         </div>
       </div>
 
-      {/* Grelha de Cartões de Técnicas Acadêmicas */}
+      {/* Grelha de Cartões de Técnicas Académicas */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {displayed.map(tech => {
           const isBooked = bookmarkedIds.has(tech.id);
@@ -203,7 +203,7 @@ export const CatalogExplorerView: React.FC<CatalogExplorerViewProps> = ({
                     </span>
                     {tech.isSubtechnique ? (
                       <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 bg-[#e3dccf] text-[#161514] border border-[#161514]/40">
-                        SUB-TÉCNICA
+                        SUBTÉCNICA
                       </span>
                     ) : (
                       tech.subtechniqueIds.length > 0 && (
@@ -226,7 +226,7 @@ export const CatalogExplorerView: React.FC<CatalogExplorerViewProps> = ({
                         ? 'bg-[#b81d18] text-[#f4efe6]'
                         : 'bg-[#ece6da] text-[#161514] hover:bg-[#161514] hover:text-[#f4efe6]'
                     }`}
-                    title={isBooked ? 'Remover das Field Notes' : 'Adicionar às Field Notes'}
+                    title={isBooked ? 'Remover das notas de campo' : 'Adicionar às notas de campo'}
                   >
                     <Bookmark className="w-3.5 h-3.5 fill-current" />
                   </button>
@@ -235,10 +235,10 @@ export const CatalogExplorerView: React.FC<CatalogExplorerViewProps> = ({
                 {/* Títulos EN e PT */}
                 <div>
                   <h3 className="font-condensed font-bold text-lg uppercase text-[#161514] group-hover:text-[#b81d18] transition-colors leading-snug">
-                    {tech.fullNameEn}
+                    {tech.fullNamePt}
                   </h3>
                   <p className="text-xs font-mono font-bold text-[#b81d18] mt-0.5">
-                    {tech.fullNamePt}
+                    MITRE: {tech.fullNameEn}
                   </p>
                 </div>
 
@@ -257,7 +257,7 @@ export const CatalogExplorerView: React.FC<CatalogExplorerViewProps> = ({
                   })}
                 </div>
 
-                {/* Excerto da Descrição Acadêmica em Português */}
+                {/* Excerto da Descrição Académica em Português */}
                 <p className="text-xs text-[#262421] line-clamp-3 leading-relaxed">
                   {tech.descriptionPt.replace(/[*`]/g, '')}
                 </p>
@@ -267,7 +267,7 @@ export const CatalogExplorerView: React.FC<CatalogExplorerViewProps> = ({
               <div className="pt-3 border-t border-[#161514]/30 flex items-center justify-between text-[11px] font-mono text-[#4a4742]">
                 <div className="flex items-center gap-3">
                   <span className="flex items-center gap-1 text-[#b81d18] font-bold">
-                    <Zap className="w-3 h-3" /> Bypass Ready
+                    <Zap className="w-3 h-3" /> Com notas de contorno
                   </span>
                   {tech.codeArtifacts.length > 0 && (
                     <span className="flex items-center gap-1 text-[#161514] font-bold">

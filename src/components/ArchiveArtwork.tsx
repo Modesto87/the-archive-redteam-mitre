@@ -150,7 +150,7 @@ export const ArchiveRedSpine: React.FC<ArchiveRedSpineProps> = ({
         <div className="writing-vertical-rl font-mono font-bold text-[10px] tracking-[0.22em] uppercase text-[#161514] flex items-center gap-3 whitespace-nowrap">
           <span>{volumeTitle}</span>
           <span className="opacity-50">|</span>
-          <span>FIELD NOTES</span>
+          <span>NOTAS DE CAMPO</span>
           <span className="opacity-50">|</span>
           <span>{refCode}</span>
         </div>
